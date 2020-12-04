@@ -1,0 +1,43 @@
+.NavBarItems {
+    background: linear-gradient(90deg, #fc00ff 0%, #00dbde 100%);
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+    align-items: center;
+    color: aliceblue;
+}
+
+.NavBar-logo {
+    justify-self: start;
+    margin-left: 0.5rem;
+}
+
+.NavBar-menu {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: 10px;
+    list-style: none;
+    text-align: center;
+    justify-content: end;
+    width: 70vw;
+    margin-right: 2rem;
+}
+
+.nav-links {
+    color: aliceblue;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+}
+
+.nav-links:hover {
+    background-color: white;
+    border-radius: 15px;
+    color: black;
+    transition: all 0.3s ease-in-out;
+    text-decoration: underline;
+}
+
+.NavBar-icon {
+    height: 80px;
+}

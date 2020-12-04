@@ -1,0 +1,484 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot tests for each of the pages About matches snapshot 1`] = `
+<div
+  className="App"
+  data-testid="AboutBox"
+  id="AboutBox"
+>
+  <nav
+    className="NavBarItems"
+  >
+    <div
+      className="size"
+      style={
+        Object {
+          "transform": "scale(0.75)",
+        }
+      }
+    >
+      <img
+        alt="logo"
+        className="Navbar-icon"
+        src="penn_book_menu_icon.svg"
+      />
+    </div>
+    <h1
+      className="NavBar-logo"
+    >
+      PennBook
+    </h1>
+    <div
+      className="Navbar-icon"
+    />
+    <ul
+      className="NavBar-menu"
+    >
+      <li>
+        <a
+          className="nav-links"
+          href="/"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/about"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/features"
+        >
+          Features
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/register"
+        >
+          Register
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <br />
+  <h1>
+    About
+  </h1>
+  <img
+    alt="logo"
+    className="App-logo"
+    src="logo.svg"
+  />
+</div>
+`;
+
+exports[`Snapshot tests for each of the pages Features matches snapshot 1`] = `
+<div
+  className="App"
+>
+  <nav
+    className="NavBarItems"
+  >
+    <div
+      className="size"
+      style={
+        Object {
+          "transform": "scale(0.75)",
+        }
+      }
+    >
+      <img
+        alt="logo"
+        className="Navbar-icon"
+        src="penn_book_menu_icon.svg"
+      />
+    </div>
+    <h1
+      className="NavBar-logo"
+    >
+      PennBook
+    </h1>
+    <div
+      className="Navbar-icon"
+    />
+    <ul
+      className="NavBar-menu"
+    >
+      <li>
+        <a
+          className="nav-links"
+          href="/"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/about"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/features"
+        >
+          Features
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/register"
+        >
+          Register
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <br />
+  <h1>
+    Features
+  </h1>
+  <img
+    alt="logo"
+    className="App-logo"
+    src="logo.svg"
+  />
+</div>
+`;
+
+exports[`Snapshot tests for each of the pages Landing Page matches snapshot 1`] = `
+<div
+  className="App"
+  data-testid="landing"
+>
+  <nav
+    className="NavBarItems"
+  >
+    <div
+      className="size"
+      style={
+        Object {
+          "transform": "scale(0.75)",
+        }
+      }
+    >
+      <img
+        alt="logo"
+        className="Navbar-icon"
+        src="penn_book_menu_icon.svg"
+      />
+    </div>
+    <h1
+      className="NavBar-logo"
+    >
+      PennBook
+    </h1>
+    <div
+      className="Navbar-icon"
+    />
+    <ul
+      className="NavBar-menu"
+    >
+      <li>
+        <a
+          className="nav-links"
+          href="/"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/about"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/features"
+        >
+          Features
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/register"
+        >
+          Register
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div
+    style={
+      Object {
+        "alignSelf": "right",
+        "float": "right",
+        "marginRight": "5vw",
+      }
+    }
+  >
+    <div
+      className="LoginForm"
+    >
+      <h2
+        className="LoginForm-title"
+      >
+        Login
+      </h2>
+      <br />
+      <form
+        onSubmit={[Function]}
+      >
+        <input
+          className="LoginForm-input"
+          name="email"
+          onChange={[Function]}
+          placeholder="Email"
+          type="text"
+          value=""
+        />
+        <br />
+        <input
+          className="LoginForm-input"
+          name="password"
+          onChange={[Function]}
+          placeholder="Password"
+          type="password"
+          value=""
+        />
+        <br />
+        <input
+          className="LoginForm-button"
+          type="submit"
+          value="Login"
+        />
+      </form>
+    </div>
+  </div>
+  <br />
+  <img
+    alt="logo"
+    className="App-logo"
+    src="logo.svg"
+  />
+</div>
+`;
+
+exports[`Snapshot tests for each of the pages Profile matches snapshot 1`] = `
+<div>
+  <nav
+    className="NavBarItems"
+  >
+    <div
+      className="size"
+      style={
+        Object {
+          "transform": "scale(0.75)",
+        }
+      }
+    >
+      <img
+        alt="logo"
+        className="Navbar-icon"
+        src="penn_book_menu_icon.svg"
+      />
+    </div>
+    <h1
+      className="NavBar-logo"
+    >
+      PennBook
+    </h1>
+    <div
+      className="Navbar-icon"
+    />
+    <ul
+      className="NavBar-menu"
+    >
+      <li>
+        <a
+          className="nav-links"
+          href="/"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/about"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/features"
+        >
+          Features
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/register"
+        >
+          Register
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <h1>
+    Profile
+  </h1>
+</div>
+`;
+
+exports[`Snapshot tests for each of the pages Register matches snapshot 1`] = `
+<div
+  className="App"
+>
+  <nav
+    className="NavBarItems"
+  >
+    <div
+      className="size"
+      style={
+        Object {
+          "transform": "scale(0.75)",
+        }
+      }
+    >
+      <img
+        alt="logo"
+        className="Navbar-icon"
+        src="penn_book_menu_icon.svg"
+      />
+    </div>
+    <h1
+      className="NavBar-logo"
+    >
+      PennBook
+    </h1>
+    <div
+      className="Navbar-icon"
+    />
+    <ul
+      className="NavBar-menu"
+    >
+      <li>
+        <a
+          className="nav-links"
+          href="/"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/about"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/features"
+        >
+          Features
+        </a>
+      </li>
+      <li>
+        <a
+          className="nav-links"
+          href="/register"
+        >
+          Register
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div
+    style={
+      Object {
+        "alignSelf": "right",
+        "float": "right",
+        "marginRight": "5vw",
+      }
+    }
+  >
+    <div
+      className="SignupForm"
+    >
+      <h2
+        className="SignupForm-title"
+      >
+        Sign Up
+      </h2>
+      <br />
+      <form
+        onSubmit={[Function]}
+      >
+        <input
+          className="SignupForm-input"
+          name="username"
+          onChange={[Function]}
+          placeholder="Username"
+          type="text"
+          value=""
+        />
+        <br />
+        <input
+          className="SignupForm-input"
+          name="email"
+          onChange={[Function]}
+          placeholder="Email"
+          type="text"
+          value=""
+        />
+        <br />
+        <input
+          className="SignupForm-input"
+          name="password"
+          onChange={[Function]}
+          placeholder="Password"
+          type="password"
+          value=""
+        />
+        <br />
+        <input
+          className="SignupForm-button"
+          id="SignupForm-button-id"
+          type="submit"
+          value="Sign up"
+        />
+      </form>
+    </div>
+  </div>
+  <br />
+  <img
+    alt="logo"
+    className="App-logo"
+    src="logo.svg"
+  />
+</div>
+`;
