@@ -11,14 +11,38 @@
 
 .PlayerSearch{
     background-color: aquamarine;
-    display: flex;
-    justify-content: start;
-    align-items: flex-end;
+    display: inline-block;
 }
 
 .searchBar {
     background-color: yellow;
-    width: 70vw;
+    display: inline-flex;
+    align-items: center;
+    width: 80vw;
+}
+
+.searchAttr {
+    width: 80vw;
+    display: flex;
+    justify-content: flex-end;
+    float:right;
+    background-color: red;
+    align-items: center;
+}
+
+.dateContainer{
+    width:10vw;
+    padding-left: 10px;
+}
+
+.dropContainer {
+    width:15vw;
+    padding-left: 10px;
+}
+
+.enterContainer{
+    width:5vw;
+    padding-left: 10px;
 }
 
 .PlayerPane {
@@ -96,10 +120,9 @@
 }
 
 .Player-logo {
+    margin-right: 10px;
     height: 5vmin;
     pointer-events: none;
-    bottom: 0%;
-    left: 0%;
     position: relative;
   }
 

@@ -2,7 +2,8 @@ import logo from '../resources/logo.svg';
 import '../styles/OuterPages.css';
 import TopNavBar from '../components/TopNavBar';
 import React from 'react'
-
+import Select from 'react-select'
+import options from '../resources/options'
 
 export default class About extends React.Component{
 
@@ -11,6 +12,7 @@ export default class About extends React.Component{
     this.state = {
     }
   }
+
   render() {
     return (
       <div data-testid="AboutBox" id="AboutBox" className="App">
@@ -18,7 +20,21 @@ export default class About extends React.Component{
         <br></br>
         <h1>About</h1>
         <img src={logo} className="App-logo" alt="logo" />
-      </div>
+        <div style={{width: '50vw'}}>
+        <Select
+                        isClearable
+                        isSearchable
+                        
+                        onChange={this.hanldeNewAttrSelected}
+                        className="selector"
+                        name="color"
+                        options={options}
+                        
+                        style={{width: '25%'}}
+                        />
+        </div>
+        
+        </div>
     );
   }
 }
