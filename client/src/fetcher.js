@@ -6,7 +6,7 @@ const getUsers = async () => {
       Accept: 'application/json',
     },
     };
-    const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/users/', requestOptions);
+    const response = await fetch('http://localhost:8080/users/', requestOptions);
     return response.json();
 };
 
@@ -19,7 +19,7 @@ const createUser = async (username, email, password, date) => {
       },
       body: JSON.stringify({ username: username, email: email, password: password, date: date })
     };
-    const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/user/', requestOptions);
+    const response = await fetch('http://localhost:8080/user/', requestOptions);
     return response.json();
 };
 
@@ -32,7 +32,7 @@ const loginUser = async (email, password) => {
       },
       body: JSON.stringify({email: email, password: password })
     };
-    const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/login/', requestOptions);
+    const response = await fetch('http://localhost:8080/login/', requestOptions);
     return response.json();
 };
 
@@ -45,7 +45,7 @@ const getUser = async (requester) => {
     },
     body: JSON.stringify({requester: requester}),
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/get_user/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_user/', requestOptions);
   return response.json();
 };
 
@@ -58,7 +58,7 @@ const getName = async (email) => {
     },
     body: JSON.stringify({email: email}),
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/get_name/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_name/', requestOptions);
   return response.json();
 };
 
@@ -71,7 +71,7 @@ const addUser = async (requester, target) => {
     },
     body: JSON.stringify({requester: requester, target: target })
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/add_user/', requestOptions);
+  const response = await fetch('http://localhost:8080/add_user/', requestOptions);
   return response.json();
 };
 
@@ -84,7 +84,7 @@ const remUser = async (requester, target) => {
     },
     body: JSON.stringify({requester: requester, target: target })
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/rem_user/', requestOptions);
+  const response = await fetch('http://localhost:8080/rem_user/', requestOptions);
   return response.json();
 };
 
@@ -97,7 +97,7 @@ const getContacts = async (requester) => {
     },
     body: JSON.stringify({requester: requester})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/get_contacts/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_contacts/', requestOptions);
   return response.json();
 };
 
@@ -110,7 +110,7 @@ const getSuggs = async (requester) => {
     },
     body: JSON.stringify({requester: requester})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/get_suggs/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_suggs/', requestOptions);
   return response.json();
 };
 
@@ -123,7 +123,7 @@ const changePassword = async (requester, newPassword) => {
     },
     body: JSON.stringify({requester: requester, newPassword: newPassword})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/change_password/', requestOptions);
+  const response = await fetch('http://localhost:8080/change_password/', requestOptions);
   return response.json();
 };
 
@@ -136,7 +136,7 @@ const deactivateAcc = async (requester) => {
     },
     body: JSON.stringify({requester: requester})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/deactivate_acc/', requestOptions);
+  const response = await fetch('http://localhost:8080/deactivate_acc/', requestOptions);
   return response.json();
 };
 
@@ -151,7 +151,7 @@ const sendMessage = async (sender, receiver, text, time) => {
     },
     body: JSON.stringify({sender: sender, receiver: receiver, text: text, time: time})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/send_msg/', requestOptions);
+  const response = await fetch('http://localhost:8080/send_msg/', requestOptions);
   return response.json();
 };
 
@@ -164,7 +164,7 @@ const getMessages = async (requester) => {
     },
     body: JSON.stringify({requester: requester})
   };
-  const response = await fetch('https://rendezvous-cis557-server.herokuapp.com/get_messages/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_messages/', requestOptions);
   return response.json();
 }
 

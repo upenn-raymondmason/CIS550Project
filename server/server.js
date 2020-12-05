@@ -4,16 +4,14 @@ var session = require('express-session');
 const cognitoPoolData = require('./cognito');
 const url = 'mongodb+srv://rootuser:weakpassword@cluster0.luo48.mongodb.net/project?retryWrites=true&w=majority';
 const webapp = express();
-// security feature. JSON web token - https://jwt.io
-const jwt = require('jsonwebtoken');
 
 // enable cors in our express app
-webapp.use(cors({origin: 'https://rendezvous-cis557-client.herokuapp.com'}));
+webapp.use(cors({origin: 'http://localhost:8080/'})); // HEROKU: Add 
 // Help with parsing body of HTTP requests
 const bodyParser = require('body-parser');
 
 // Server port
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080; // remove process.env for local testing
 
 webapp.use(session({
   resave: false, // don't save session if unmodified
@@ -116,7 +114,7 @@ webapp.post('/user/', (req, res) => {
     date: req.body.date,
     messages: []
   };
-
+  /*
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -131,11 +129,13 @@ webapp.post('/user/', (req, res) => {
             db.close();
         });
       });
+
+      
   } catch (error) {
     res.status(400).json({ error: err.message });
     return;
   }
-  
+  */
     // inserted into database successfully
 
     // now sign up with cognito

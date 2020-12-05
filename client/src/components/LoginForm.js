@@ -1,6 +1,7 @@
 import React from 'react'
 import '../styles/LoginForm.css'
 import {loginUser, getName, getUser} from '../fetcher'
+import GoogleLogin from 'react-google-login'
 
 export default class LoginForm extends React.Component {
 
@@ -77,7 +78,13 @@ export default class LoginForm extends React.Component {
                 <h2 className='LoginForm-title'>Login</h2>
                 <br></br>
                 <form onSubmit={this.handleSubmit}>
-                    
+                <GoogleLogin
+                clientId="1094452346635-fpk0us508l6psu1i64et4ahmiu1uamo9.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={(response) => {console.log(response);}}
+                onFailure={(response) => {console.log(response);}}
+                cookiePolicy={'single_host_origin'}
+                />
                     <input className="LoginForm-input" type="text" name="email" placeholder="Email" value={this.state.email} onChange={this.handleEmailChange}/>
                     <br></br>
                     <input className="LoginForm-input" type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}/>
@@ -85,6 +92,7 @@ export default class LoginForm extends React.Component {
                     <input className="LoginForm-button" type="submit" value="Login" />
                 </form>
             </div>
+            
         )
     }
 
