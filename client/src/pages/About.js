@@ -23,3 +23,4 @@ export default class About extends React.Component{
   }
 }
 
+//<img src={logo} className="App-logo" alt="logo" />

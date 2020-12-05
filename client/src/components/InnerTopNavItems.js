@@ -10,8 +10,8 @@ export const InnerTopNavItems = [
         class: 'nav-links'
     },
     {
-        title: 'Contacts',
-        url: '/contacts',
+        title: 'Player Search',
+        url: '/player',
         class: 'nav-links'
     },
     {
@@ -19,4 +19,5 @@ export const InnerTopNavItems = [
         url: '/profile',
         class: 'nav-links'
     }
+
 ]

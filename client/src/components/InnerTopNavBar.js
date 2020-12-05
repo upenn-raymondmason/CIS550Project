@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from '../resources/penn_book_menu_icon.svg';
+import logo from '../resources/balll.png';
 
 import { InnerTopNavItems } from './InnerTopNavItems'
 import '../styles/TopNavBar.css'
@@ -12,7 +12,7 @@ class InnerTopNavBar extends Component {
                 <div style={{transform: 'scale(0.75)'}}  className="size">
                 <img src={logo} className="Navbar-icon" alt="logo" />
                 </div>
-                <h1 className="NavBar-logo" >PennBook</h1>
+                <h1 className="NavBar-logo" >Golazo</h1>
                 <div className="Navbar-icon"></div>
                 <ul className={'NavBar-menu'}>
                     {InnerTopNavItems.map((item, i) => {

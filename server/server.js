@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 var session = require('express-session');
 const cognitoPoolData = require('./cognito');
-const url = 'mongodb+srv://rootuser:weakpassword@cluster0.luo48.mongodb.net/project?retryWrites=true&w=majority';
+const url = 'mongodb+srv://rootuser:weakpassword@cluster0.luo48.mongodb.net/cis550?retryWrites=true&w=majority';
 const webapp = express();
 
 // enable cors in our express app
-webapp.use(cors({origin: 'http://localhost:8080/'})); // HEROKU: Add 
+webapp.use(cors()); // HEROKU: Add 
 // Help with parsing body of HTTP requests
 const bodyParser = require('body-parser');
 
@@ -65,12 +65,14 @@ webapp.post('/login/', (req, res) => {
   var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
   cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
-      //console.log(result);
-      console.log(userToken);
       state.email = req.body.email;
+      res.json({
+        message: 'success',
+      })
     },
     onFailure: function (err) {
       if (err) {
+        console.log(err);
         res.status(404).json({ error: err });
         return; // WHY is this not returning/terminating before the MONGODB code to get in database if user credentials not correct in cognito
       }
@@ -110,22 +112,17 @@ webapp.post('/user/', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    contacts: [req.body.username],
-    date: req.body.date,
-    messages: []
+    favPlayers: [req.body.username],
+    favTeams: req.body.date
   };
-  /*
+  
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");
+        var dbo = db.db("cis550");
         dbo.collection("users").insertOne(newUser, function(err) {
             if (err) throw err;
             console.log("user inserted");
-            res.json({
-              message: "success",
-              user: newUser // includes id @Varun can you store locally in front end if you want
-            })
             db.close();
         });
       });
@@ -135,7 +132,7 @@ webapp.post('/user/', (req, res) => {
     res.status(400).json({ error: err.message });
     return;
   }
-  */
+  
     // inserted into database successfully
 
     // now sign up with cognito
@@ -148,7 +145,6 @@ webapp.post('/user/', (req, res) => {
     const usernameAtt = new AmazonCognitoIdentity.CognitoUserAttribute(usernameData);
     userPool.signUp(newUser.email, newUser.password, [usernameAtt], null, function(err, result) {
       if (err) {
-        alert(err.message);
           res.status(400).json({ error: 'could not sign up user - email in use' });
           console.log(err);
           return;

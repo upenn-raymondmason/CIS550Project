@@ -1,0 +1,119 @@
+.Players{
+    background-color: rgba(210, 226, 222, 0.8);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+    margin-top: 2.5rem;
+    padding: 0.2rem 3.6rem;
+    width: 80vw; 
+    height: 80vh;
+}
+
+.PlayerSearch{
+    background-color: aquamarine;
+    display: flex;
+    justify-content: start;
+    align-items: flex-end;
+}
+
+.searchBar {
+    background-color: yellow;
+    width: 70vw;
+}
+
+.PlayerPane {
+    background-color: aqua;
+    justify-self: left;
+    float: left;
+    border-radius: 20px;
+    margin-top: 1.5rem;
+    padding: 0.2rem 0.2rem;
+    width: 39vw;
+    height: 34vw;
+}
+
+.ResultsPane {
+    background-color: aqua;
+    justify-self: right;
+    float: right;
+    border-radius: 20px;
+    margin-top: 1.5rem;
+    padding: 0.2rem 0.2rem;
+    width: 39vw;
+    height: 34vw;
+}
+
+.playerItem{
+    background-color: green;
+    border-radius: 15px;
+    padding: 0.2rem 0.2rem;
+    width: 37vw;
+    height: 5vw;
+    margin: 0.2rem auto;
+}
+
+.playerStats{
+    background-color: purple;
+    border-radius: 20px;
+    padding: 0.2rem 0.2rem;
+    width: 20vw;
+    height: 4vw;
+    margin: 0.2rem auto;
+    float: left;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.playerStats>ul {
+    list-style: none;
+    list-style-type: none;
+    padding: 0;
+    display: inline-block;
+    text-align: left;
+}
+
+.playerName{
+    font-weight: bold;
+}
+
+.playerDate {
+    font-style: italic;
+}
+
+.playerRating {
+    background-color: purple;
+    border-radius: 20px;
+    padding: 0.2rem 0.2rem;
+    width: 10vw;
+    height: 4vw;
+    margin: 0.2rem auto;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+
+.Player-logo {
+    height: 5vmin;
+    pointer-events: none;
+    bottom: 0%;
+    left: 0%;
+    position: relative;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .Player-logo {
+      animation: App-logo-spin infinite 10s linear;
+    }
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }

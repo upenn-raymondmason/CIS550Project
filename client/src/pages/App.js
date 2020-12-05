@@ -7,6 +7,8 @@ import Register from './Register';
 import Profile from './Profile';
 import Contacts from './Contacts';
 import Messaging from './Messaging';
+import Player from './Player';
+
 export default class App extends React.Component {
 
 	constructor(props) {
@@ -62,16 +64,9 @@ export default class App extends React.Component {
 						/>
 						<Route
 							exact
-							path="/contacts"
+							path="/player"
 							render={() => (
-								<Contacts username = {this.state.username}/>
-							)}
-						/>
-						<Route
-							exact
-							path="/messaging"
-							render={() => (
-								<Messaging />
+								<Player />
 							)}
 						/>
 					</Switch>
