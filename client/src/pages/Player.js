@@ -4,10 +4,10 @@ import '../styles/Dropdown.css'
 import PlayerItem from '../components/PlayerItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
 import React, { useState } from 'react';
-import {ScrollView} from 'react-native';
+import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
-import {getPlayers} from '../fetcher';
+import {getPlayers, getPlayerData} from '../fetcher';
 
 const options = require('../resources/options');
 
@@ -22,7 +22,10 @@ export default class Player extends React.Component {
             max: undefined,
             start: undefined,
             end: undefined,
-            results: []
+            results: [],
+            selName: undefined,
+            selEvalDate: undefined,
+            selData: [],
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -33,6 +36,8 @@ export default class Player extends React.Component {
         this.handleNewStartTyped = this.handleNewStartTyped.bind(this);
         this.handleNewEndTyped = this.handleNewEndTyped.bind(this);
         this.updateResults = this.updateResults.bind(this);
+        this.updateSel = this.updateSel.bind(this);
+        this.updateSelData = this.updateSelData.bind(this);
     }
 
     handleNewStartTyped(event) {
@@ -67,6 +72,23 @@ export default class Player extends React.Component {
 
     updateResults(results) {
         this.setState({results: results});
+    }
+
+    updateSel(newSelName, newSelEvalDate) {
+        this.setState({selName: newSelName});
+        var evalYear =  new Date(newSelEvalDate).getFullYear();
+        var evalMonth =  new Date(newSelEvalDate).getMonth();
+        this.setState({selEvalDate: new Date(newSelEvalDate)});
+        console.log(newSelName);
+        getPlayerData(newSelName)
+        .then(res => {
+            this.updateSelData(res);
+            console.log(res);
+        });
+    }
+
+    updateSelData(newData) {
+        this.setState({selData: newData});
     }
 
     handleSubmit(event) {
@@ -104,6 +126,16 @@ export default class Player extends React.Component {
         } else {
             if (this.state.min !== undefined || this.state.max !== undefined) {
                 alert('Enter an attribute to go with your min/max value');
+            } else {
+                getPlayers(this.state.searchName, this.state.start, this.state.end, this.state.attribute, this.state.min, this.state.max)
+                .then(res => {
+                    if (res.message !== 'success') {
+                        console.log(res.err);
+                    } else {
+                        this.updateResults(res.data);
+                        console.log(this.state.results);
+                    }
+                });
             }
         }
     }
@@ -178,24 +210,26 @@ export default class Player extends React.Component {
                     </div>
                     
                     <div className="PlayerPane">
-                        <ScrollView>
+                        <ScrollView style={{height: '100%'}}>
                         {this.state.results.map((item, i) => (
                                     //<div onClick = {this.props.updateReceiver(item.firstname)}>
-                                    <div key = {item.ID}>
+                                    <div key = {item.ID} onClick={() => {this.updateSel(item.PLAYER_NAME, item.EVAL_DATE)}}>
                                         <PlayerItem
                                             id = {item.ID}
                                             name = {item.PLAYER_NAME}
                                             date = {item.BIRTHYEAR}
                                             rating = {item.OVERALL_RATING}
+                                            evalDate = {item.EVAL_DATE}
                                             key={item.ID}
+                                            
                                         />
                                     </div>
                         ))}
                         </ScrollView>
                     </div>
-                    
+                            {this.state.selName}
                     <div className="ResultsPane">
-                        {this.state.attribute} {this.state.min} {this.state.max} {this.state.searchName} {this.state.start} {this.state.end}
+                        
                     </div>
                 </div>
             </div>

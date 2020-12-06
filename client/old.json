@@ -3,22 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cantonjs/react-scroll-view": "^0.4.2",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-react": "^7.12.7",
     "@react-native-community/google-signin": "^5.0.0",
+    "@testing-library/react": "^11.1.2",
+    "@testing-library/user-event": "^12.2.2",
     "antd": "^4.8.2",
+    "babel-core": "^7.0.0-bridge.0",
     "file-loader": "^6.2.0",
     "geckodriver": "^1.20.0",
-    "intersection-observer": "^0.11.0",
     "isomorphic-fetch": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-dom": "^4.0.0",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-mock-fetch": "^1.0.9",
     "moment": "^2.29.1",
     "node": "^15.3.0",
     "node-sass": "4.14.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-google-login": "^5.1.25",
+    "react-native-google-signin": "^2.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
     "react-select": "^3.1.1",
+    "react-test-renderer": "^17.0.1",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "web-vitals": "^0.2.4"
   },
@@ -46,5 +56,9 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-class-properties": "^7.12.1",
+    "@testing-library/jest-dom": "^5.11.6"
+  }
 }

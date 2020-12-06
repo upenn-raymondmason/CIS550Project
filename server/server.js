@@ -441,7 +441,7 @@ webapp.post('/get_players/', (req, res) => {
   }
   console.log(end);
 
-  async function sql_with_name () {
+  async function sql_with_name_with_attr () {
     let connection;
   
     try {
@@ -487,7 +487,7 @@ webapp.post('/get_players/', (req, res) => {
     }
   }
 
-  async function sql_wo_name () {
+  async function sql_wo_name_with_attr () {
     let connection;
   
     try {
@@ -501,19 +501,21 @@ webapp.post('/get_players/', (req, res) => {
         `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
-          FROM player)
-          WITH temp_res as (SELECT * from elig_players
+          FROM player),
+          temp_res as (SELECT * from elig_players
           LEFT JOIN playerattributes
           ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
           WHERE BIRTHYEAR <= :edate
           AND BIRTHYEAR >= :sdate
           AND ${req.body.attr} <= :maattr
-          AND ${req.body.attr} >= :miattr)
-          WITH temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED)) AS EVAL_DATE FROM temp_res GROUP BY PLAYER_NAME)
-          SELECT * FROM temp_res tr JOIN temp_latest tl ON tr.PLAYER_NAME == tl.PLAYER_NAME AND TO_DATE(tr.DATE_EVALUATED) == tl.EVAL_DATE`
+          AND ${req.body.attr} >= :miattr),
+          temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS EVAL_DATE FROM temp_res GROUP BY PLAYER_NAME)
+          SELECT * FROM temp_res tr JOIN temp_latest tl ON 
+          tr.PLAYER_NAME = tl.PLAYER_NAME AND TO_DATE(tr.DATE_EVALUATED,'YYYY-MM-DD HH24:MI:SS') = tl.EVAL_DATE`
       //, name = req.body.name, attr = req.body.attr, end = end, start = start, max = max, min = min);
       //, [req.body.name, end, start, 'overall_rating', max, 'overall_rating', min]);
-     , [req.body.name, end, start, max, min]);
+     , [end, start, max, min]);
       console.log(result.rows);
       res.json({message: 'success', data: result.rows});
     } catch (err) {
@@ -530,11 +532,156 @@ webapp.post('/get_players/', (req, res) => {
     }
   }
 
-  if (!req.body.name) {
-    sql_wo_name();
-  } else {
-    sql_with_name();
+  async function sql_wo_attr_wo_name () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+  
+      const result = await connection.execute(
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+          EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS BIRTHYEAR 
+          FROM player),
+          temp_res as (SELECT * from elig_players
+          LEFT JOIN playerattributes
+          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          WHERE BIRTHYEAR <= :edate
+          AND BIRTHYEAR >= :sdate),
+          temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS EVAL_DATE FROM temp_res GROUP BY PLAYER_NAME)
+          SELECT * FROM temp_res tr JOIN temp_latest tl ON 
+          tr.PLAYER_NAME = tl.PLAYER_NAME AND TO_DATE(tr.DATE_EVALUATED,'YYYY-MM-DD HH24:MI:SS') = tl.EVAL_DATE`
+      //, name = req.body.name, attr = req.body.attr, end = end, start = start, max = max, min = min);
+      //, [req.body.name, end, start, 'overall_rating', max, 'overall_rating', min]);
+     , [end, start]);
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
   }
+
+  async function sql_wo_attr_with_name () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+  
+      const result = await connection.execute(
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+          EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS BIRTHYEAR 
+          FROM player
+          WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%'))),
+          temp_res as (SELECT * from elig_players
+          LEFT JOIN playerattributes
+          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          WHERE BIRTHYEAR <= :edate
+          AND BIRTHYEAR >= :sdate),
+          temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS EVAL_DATE FROM temp_res GROUP BY PLAYER_NAME)
+          SELECT * FROM temp_res tr JOIN temp_latest tl ON 
+          tr.PLAYER_NAME = tl.PLAYER_NAME AND TO_DATE(tr.DATE_EVALUATED,'YYYY-MM-DD HH24:MI:SS') = tl.EVAL_DATE`
+      //, name = req.body.name, attr = req.body.attr, end = end, start = start, max = max, min = min);
+      //, [req.body.name, end, start, 'overall_rating', max, 'overall_rating', min]);
+     , [req.body.name,end, start]);
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  if (!req.body.name && !req.body.attr) {
+    sql_wo_attr_wo_name();
+  } else if (!req.body.name && req.body.attr) {
+    sql_wo_name_with_attr();
+  } else if (req.body.name && !req.body.attr) {
+    sql_wo_attr_with_name();
+  } else {
+    sql_with_name_with_attr();
+  }
+
+});
+
+/*** GET PLAYER DATA ENDPOINT ***/
+webapp.post('/get_player_data/', (req, res) => {
+  console.log(`GETTING PLAYER DATA FOR ${req.body.name}`);
+
+  if(!req.body.name) {
+    console.log(req);
+    res.status(400).json({ error: 'missing name' });
+    return;
+  }
+
+  async function sql () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+  
+      const result = await connection.execute(
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+          EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS BIRTHYEAR 
+          FROM player
+          WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%')))
+          SELECT * from elig_players
+          LEFT JOIN playerattributes
+          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ORDER BY TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS') DESC`
+      //, name = req.body.name, attr = req.body.attr, end = end, start = start, max = max, min = min);
+      //, [req.body.name, end, start, 'overall_rating', max, 'overall_rating', min]);
+     , [req.body.name]);
+
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
 
 });
 

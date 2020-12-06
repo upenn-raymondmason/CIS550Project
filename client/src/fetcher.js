@@ -101,4 +101,17 @@ const getPlayers = async (name, start, end, attr, min, max) => {
   return response.json();
 };
 
-export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers};
+const getPlayerData = async (name) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({name: name})
+  };
+  const response = await fetch('http://localhost:8080/get_player_data/', requestOptions);
+  return response.json();
+};
+
+export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers, getPlayerData};

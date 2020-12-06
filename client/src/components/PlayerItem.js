@@ -9,6 +9,8 @@ export default class PlayerItem extends React.Component {
             name: props.name,
             date: props.date,
             rating: props.rating,
+            evalYear: new Date(props.evalDate).getFullYear(),
+            evalMonth: new Date(props.evalDate).getMonth(),
         }
     }
 
@@ -18,11 +20,11 @@ export default class PlayerItem extends React.Component {
 
     render() {
        return (
-            <div className="playerItem" onClick = {() => this.handleContactClick()}>
+            <div className="playerItem" >
                 <div className = "playerStats">
                     <ul>
                         <li className = "playerName">{this.state.name}</li>
-                        <li className = "playerDate">Born: {this.state.date}</li>
+                        <li className = "playerDate">Born: {this.state.date} Last Eval: {this.state.evalMonth}.{this.state.evalYear}</li>
                     </ul>
                 </div>
                
