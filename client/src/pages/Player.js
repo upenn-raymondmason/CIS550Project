@@ -3,9 +3,11 @@ import '../styles/Input.scss'
 import '../styles/Dropdown.css'
 import PlayerItem from '../components/PlayerItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import {ScrollView} from 'react-native';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
+import {getPlayers} from '../fetcher';
 
 const options = require('../resources/options');
 
@@ -19,7 +21,8 @@ export default class Player extends React.Component {
             min: undefined,
             max: undefined,
             start: undefined,
-            end: undefined
+            end: undefined,
+            results: []
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -29,6 +32,7 @@ export default class Player extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleNewStartTyped = this.handleNewStartTyped.bind(this);
         this.handleNewEndTyped = this.handleNewEndTyped.bind(this);
+        this.updateResults = this.updateResults.bind(this);
     }
 
     handleNewStartTyped(event) {
@@ -44,34 +48,10 @@ export default class Player extends React.Component {
     };
 
     handleNewMaxTyped(event) {
-        /*if (event.target.value < 0) {
-            alert('Min of attribute cannot be less than 0')
-            this.setState({min: 0});
-        } else if (event.target.value > 100) {
-            alert('Max of attribute cannot be greater than 100')
-            this.setState({max: 100});
-        } else if(event.target.value < this.state.min) {
-            alert('Max of attribute cannot be lower than Min');
-            this.setState({max: 100});
-        } else {
-        this.setState({max: event.target.value});
-        } */
         this.setState({max: event.target.value});
     };
 
     handleNewMinTyped(event) {
-        /*if (event.target.value < 0) {
-            alert('Min of attribute cannot be less than 0')
-            this.setState({min: 0});
-        } else if (event.target.value > 100) {
-            alert('Min of attribute cannot be greater than 100')
-            this.setState({min: 0});
-        } else if(event.target.value > this.state.max) {
-            alert('Min of attribute cannot be greater than Max');
-            this.setState({min: 0});
-        } else {
-        this.setState({min: event.target.value});
-        } */
         this.setState({min: event.target.value});
     };
 
@@ -84,6 +64,10 @@ export default class Player extends React.Component {
         }
         
     };
+
+    updateResults(results) {
+        this.setState({results: results});
+    }
 
     handleSubmit(event) {
         var min = parseInt(this.state.min);
@@ -107,7 +91,15 @@ export default class Player extends React.Component {
             } else if (max > 100) {
                 alert('Max of attribute cannot be greater than 100');
             } else {
-                console.log('wTF');
+                getPlayers(this.state.searchName, this.state.start, this.state.end, this.state.attribute, this.state.min, this.state.max)
+                .then(res => {
+                    if (res.message !== 'success') {
+                        console.log(res.err);
+                    } else {
+                        this.updateResults(res.data);
+                        console.log(this.state.results);
+                    }
+                });
             }
         } else {
             if (this.state.min !== undefined || this.state.max !== undefined) {
@@ -186,8 +178,22 @@ export default class Player extends React.Component {
                     </div>
                     
                     <div className="PlayerPane">
-                        <PlayerItem id = '10' name = 'Lionel Messi' date = '01.01.2020' rating='96'></PlayerItem>
+                        <ScrollView>
+                        {this.state.results.map((item, i) => (
+                                    //<div onClick = {this.props.updateReceiver(item.firstname)}>
+                                    <div key = {item.ID}>
+                                        <PlayerItem
+                                            id = {item.ID}
+                                            name = {item.PLAYER_NAME}
+                                            date = {item.BIRTHYEAR}
+                                            rating = {item.OVERALL_RATING}
+                                            key={item.ID}
+                                        />
+                                    </div>
+                        ))}
+                        </ScrollView>
                     </div>
+                    
                     <div className="ResultsPane">
                         {this.state.attribute} {this.state.min} {this.state.max} {this.state.searchName} {this.state.start} {this.state.end}
                     </div>
