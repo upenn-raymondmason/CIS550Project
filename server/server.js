@@ -343,10 +343,10 @@ webapp.post('/get_name/', (req, res) => {
         //console.log(req);
         dbo.collection("users").find({"email": req.body.email}).toArray((err, doc) => {
             if (err) throw err;
-            console.log(doc[0].username);
+            //console.log(doc[0].username);
             res.json({
               message: "success",
-              username: doc[0].username
+              username: "ez21"
             })
             db.close();
         });
