@@ -67,14 +67,35 @@
     height: 34vw;
 }
 
-.SpiderGraph {
+.SpiderGraphLegend {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: -20px;
+}
 
+.redRectangle{
+    width: 20px;
+    height: 5px;
+    background: red;
+}
+
+.blueRectangle{
+    width: 20px;
+    height: 5px;
+    background: blue;
+}
+
+.legendText {
+    font-size: 11px;
+    padding-left: 10px;
+    padding-right: 15px;
 }
 
 .playerItem {
     background-color: #CDD6C8;
     border-radius: 15px;
-    padding: 0.2rem 0.2rem;
+    padding: 0.2rem 0.6rem;
     width: 37vw;
     height: 5vw;
     margin: 0.2rem auto;

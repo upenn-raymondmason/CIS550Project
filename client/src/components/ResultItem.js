@@ -11,10 +11,27 @@ export default class ResultItem extends React.Component {
             name: props.name,
             date: props.date,
             rating: props.rating,
-        }
+            width: 0, 
+            height: 0
+        };
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    }
+
+    // 3 functions below for spider graph resizing: using width and height from constructor
+    componentDidMount() {
+      this.updateWindowDimensions();
+      window.addEventListener('resize', this.updateWindowDimensions);
+    }
+    componentWillUnmount() {
+      window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+    updateWindowDimensions() {
+      this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
     render() {
+
+        // Each data item is one of the color inputs
         const inputData = [
           {
             data: {
@@ -41,9 +58,9 @@ export default class ResultItem extends React.Component {
             meta: { color: 'red' }
           }
         ];
- 
+        
+        // Defining each corner of the spider chart
         const inputCaptions = {
-          // columns
           ball_control: 'Ball Control',
           finishing: 'Finishing',
           dribbling: 'Dribbling',
@@ -67,12 +84,16 @@ export default class ResultItem extends React.Component {
                         {this.state.rating}
                    </div>
                 </div>
-                <div class="SpiderGraph">
-                    <RadarChart
-                        captions={inputCaptions}
-                        data={inputData}
-                        size={350}
-                    />
+                <RadarChart
+                    captions={inputCaptions}
+                    data={inputData}
+                    size={this.state.width / 4}
+                />
+                <div class="SpiderGraphLegend">
+                    <div className = "redRectangle"/>
+                    <p className = "legendText"> Lionel Messi </p>
+                    <div className = "blueRectangle" />
+                    <p className = "legendText"> Average Player</p>
                 </div>
             </div>
         )
