@@ -57,7 +57,7 @@
 }
 
 .ResultsPane {
-    background-color: #CDD6C8;
+    background-color: #CDD6C8BF;
     justify-self: right;
     float: right;
     border-radius: 20px;
@@ -94,6 +94,14 @@
 
 .playerItem {
     background-color: #CDD6C8;
+    border-radius: 15px;
+    padding: 0.2rem 0.6rem;
+    width: 37vw;
+    height: 5vw;
+    margin: 0.2rem auto;
+}
+
+.resultItemHeader {
     border-radius: 15px;
     padding: 0.2rem 0.6rem;
     width: 37vw;

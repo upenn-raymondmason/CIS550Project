@@ -72,7 +72,7 @@ export default class ResultItem extends React.Component {
 
         return (
             <div>
-                <div className="playerItem">
+                <div className="resultItemHeader">
                     <div className = "playerStats">
                         <ul>
                             <li className = "playerName">{this.state.name}</li>
