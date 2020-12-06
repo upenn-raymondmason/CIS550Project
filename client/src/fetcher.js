@@ -88,84 +88,17 @@ const remUser = async (requester, target) => {
   return response.json();
 };
 
-const getContacts = async (requester) => {
+const getPlayers = async (name, start, end, attr, min, max) => {
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-    body: JSON.stringify({requester: requester})
+    body: JSON.stringify({name: name, start: start, end: end, attr: attr, min: min, max: max})
   };
-  const response = await fetch('http://localhost:8080/get_contacts/', requestOptions);
+  const response = await fetch('http://localhost:8080/get_players/', requestOptions);
   return response.json();
 };
 
-const getSuggs = async (requester) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({requester: requester})
-  };
-  const response = await fetch('http://localhost:8080/get_suggs/', requestOptions);
-  return response.json();
-};
-
-const changePassword = async (requester, newPassword) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({requester: requester, newPassword: newPassword})
-  };
-  const response = await fetch('http://localhost:8080/change_password/', requestOptions);
-  return response.json();
-};
-
-const deactivateAcc = async (requester) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({requester: requester})
-  };
-  const response = await fetch('http://localhost:8080/deactivate_acc/', requestOptions);
-  return response.json();
-};
-
-// MESSAGING
-
-const sendMessage = async (sender, receiver, text, time) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({sender: sender, receiver: receiver, text: text, time: time})
-  };
-  const response = await fetch('http://localhost:8080/send_msg/', requestOptions);
-  return response.json();
-};
-
-const getMessages = async (requester) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({requester: requester})
-  };
-  const response = await fetch('http://localhost:8080/get_messages/', requestOptions);
-  return response.json();
-}
-
-export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getContacts, getSuggs, changePassword, deactivateAcc, sendMessage, getMessages};
+export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers};

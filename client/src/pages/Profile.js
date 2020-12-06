@@ -2,7 +2,6 @@
 import '../styles/OuterPages.css';
 import React from 'react'
 import InnerTopNavBar from '../components/InnerTopNavBar'
-import {changePassword, deactivateAcc, getUser} from '../fetcher'
 
 export default class Profile extends React.Component{
 

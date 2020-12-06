@@ -166,7 +166,7 @@ webapp.post('/users/', (req, res) => {
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");
+        var dbo = db.db("cis550");
         //can modify to return more fields than just username
         dbo.collection("users").find({}, {'fields': {_id : 0, username: 1}}).toArray((err, doc) => {
             if (err) throw err;
@@ -203,7 +203,7 @@ webapp.post('/add_user/', (req, res) => {
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");          
+        var dbo = db.db("cis550");          
         dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {contacts: req.body.target}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
@@ -243,7 +243,7 @@ webapp.post('/rem_user/', (req, res) => {
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");
+        var dbo = db.db("cis550");
         dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {contacts: req.body.target}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
@@ -278,7 +278,7 @@ webapp.post('/get_contacts/', (req, res) => {
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");
+        var dbo = db.db("cis550");
         //console.log(req);
         dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
             if (err) throw err;
@@ -308,7 +308,7 @@ webapp.post('/get_user/', (req, res) => {
     try {
       MongoClient.connect(url, function(err, db) {
           if (err) throw err;
-          var dbo = db.db("project");
+          var dbo = db.db("cis550");
           //console.log(req);
           dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
               if (err) throw err;
@@ -339,7 +339,7 @@ webapp.post('/get_name/', (req, res) => {
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("project");
+        var dbo = db.db("cis550");
         //console.log(req);
         dbo.collection("users").find({"email": req.body.email}).toArray((err, doc) => {
             if (err) throw err;
@@ -357,95 +357,16 @@ webapp.post('/get_name/', (req, res) => {
   }   
 });
   
-/*** SEND MESSAGE ENDPOINT ***/
-webapp.post('/send_msg/', (req, res) => {
-  console.log(`Sending Message from ${req.body.sender} to ${req.body.receiver} on ${req.body.time}: ${req.body.text}`);
-  if (!req.body.text || !req.body.sender || !req.body.receiver || !req.body.time) {
-    console.log(req);
-    res.status(400).json({ error: 'missing text, sender, receiver or time' });
-    return;
-  }
-
-  //SEND TO WSSERVER
-  const content = {receiver: req.body.receiver, sender: req.body.sender, text: req.body.text, time: req.body.time};
-  const msg = {type: 'message', data: content};
-  connection.send(JSON.stringify(msg));
-
-  try {
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("project");          
-        dbo.collection("users").updateOne({"username": req.body.receiver}, {$addToSet: {messages: content}})
-        .then((result) => {
-          const { matchedCount, modifiedCount} = result;
-          if (matchedCount && modifiedCount) {
-            console.log('SUCCESS ADD message to receiver list');
-            /*res.json({
-              message: 'success',
-              content: content,
-            }); */
-          } else {
-            res.status(400).json({error: 'Failed to add message to DB!'});
-          }
-        });
-      }); 
-  } catch (error) {
-    res.status(400).json({ error: err.message });
-    return;
-  }   
-
-  //UPDATE MONGODB
-  try {
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("project");          
-        dbo.collection("users").updateOne({"username": req.body.sender}, {$addToSet: {messages: content}})
-        .then((result) => {
-          const { matchedCount, modifiedCount} = result;
-          if (matchedCount && modifiedCount) {
-            console.log('SUCCESS ADD message to sender list');
-            res.json({
-              message: 'success',
-              content: content,
-            });
-          } else {
-            res.status(400).json({error: 'Failed to add message to DB!'});
-          }
-        });
-      }); 
-  } catch (error) {
-    res.status(400).json({ error: err.message });
-    return;
-  }   
-});
-
-/*** GET MESSAGES ENDPOINT ***/
-webapp.post('/get_messages/', (req, res) => {
-  console.log(`GET messages of user: ${req.body.requester}`);
-  if (!req.body.requester) {
+/*** GET PLAYERS ENDPOINT ***/
+webapp.post('/get_players/', (req, res) => {
+  console.log(`GET PLAYERS with: ${req.body.name}, ${req.body.attr}, ${req.body.min}, ${req.body.max}, ${req.body.start}, ${req.body.end}`);
+  /*if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
     return;
-  }
+  } */
+  
 
-  try {
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("project");
-        //console.log(req);
-        dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
-            if (err) throw err;
-            res.json({
-              message: "success",
-              messages: doc[0].messages
-            })
-            db.close();
-        });
-      }); 
-  } catch (error) {
-    res.status(400).json({ error: err.message });
-    return;
-  }   
 });
 
 // Default response for any other request

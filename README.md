@@ -25,7 +25,7 @@ The project will be graded out of 100 points. We will not be disclosing the exac
 * Multiple Pages of Application:
     * Login Page - linked to mongoDB and Amazon Cognito DB
     * Home Page - linked to main AWS DB, show top 10 players of last season, top 10 player of all time in dataset, top 10 clubs of last season, top 10 clubs of all time
-    * Players to follow Page - linked to mongoDB and main DB, can favourite players or teams and have them show up here. 
+    * Players to follow Page - linked to mongoDB and main DB, can favourite players or teams and have them show up here
     * Match Search Page - Find specific match and associated data
     * Player Search Page - Find specific player data aggregated across period
     * Bet Simulator - get suggested 10 bets based on your favourited players/teams and choose what bet to take for each match. Then see if you made any money based on actual result
@@ -47,5 +47,5 @@ The project will be graded out of 100 points. We will not be disclosing the exac
     * Images of Players available???
     * Logos of football clubs - new database to join on 
     * Data Visualization - Strength Polygon for players - Other easier ideas? 
-    
+
 5. Group Dynamics - Multiplier [0.5-1]  ​(Did all members of the team contribute to theproject? Were all members of the team given the opportunity to contribute to the project?Did team members work cooperatively and support each other? As an individual, did youcomplete your fair share of the work? As an individual, did you fully complete the tasksassigned to you by the group in a timely manner? As an individual, did you communicatewith your group members regarding your ability to meet internal deadlines, as necessary?)

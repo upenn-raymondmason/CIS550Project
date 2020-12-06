@@ -5,8 +5,6 @@ import About from './About'
 import Features from './Features';
 import Register from './Register';
 import Profile from './Profile';
-import Contacts from './Contacts';
-import Messaging from './Messaging';
 import Player from './Player';
 
 export default class App extends React.Component {

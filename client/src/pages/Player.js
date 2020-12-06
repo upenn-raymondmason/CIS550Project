@@ -3,8 +3,6 @@ import '../styles/Input.scss'
 import '../styles/Dropdown.css'
 import PlayerItem from '../components/PlayerItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
-import ContactsPane from '../components/ContactsPane';
-import ManageContactsPane from '../components/ManageContactsPane';
 import React, { useState } from 'react'
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
@@ -129,14 +127,16 @@ export default class Player extends React.Component {
                     <div className="PlayerSearch">
                         
                         <div className="searchBar">
-                        <img src={logo} className="Player-logo" alt="logo" />
                             <div className="form__group field">
                             <input type="input" className="form__field" placeholder="Search for a Player Name ..." name="name" id='name' onChange={this.handleNewSearchTyped} required />
                             <label htmlFor="name" className="form__label">Player Name</label>
                             </div>
+                        <div>
                         <button className="submit" onClick= {this.handleSubmit}> 
                             <img src={logo} className="Player-logo" alt="logo" />
                         </button>
+                        </div>
+                        
                         </div>
                         <div className="searchAttr">
                         <div className = "dateContainer">
