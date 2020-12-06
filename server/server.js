@@ -19,8 +19,6 @@ webapp.use(session({
   secret: 'keyboard cat'
 }));
 
-var state = { username: '', 
-email: ''}
 webapp.use(cors());
 var MongoClient = require('mongodb').MongoClient;
 
@@ -35,6 +33,49 @@ webapp.use(bodyParser.urlencoded({
 }));
 
 webapp.use(bodyParser.json());
+
+/*var connection = mysql.createConnection({
+  host : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com",
+  user : "admin",
+  password : "password",
+  port: "1521",
+}); */
+
+const oracledb = require('oracledb');
+
+oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+
+async function run() {
+
+  let connection;
+
+  try {
+    connection = await oracledb.getConnection( {
+      user          : "admin",
+      password      : "password",
+      connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+    });
+
+    const result = await connection.execute(
+      `SELECT *
+      FROM COUNTRY`,
+    );
+    console.log(result.rows);
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+}
+
+run();
 
 // Start server
 webapp.listen(port, () => {
@@ -65,7 +106,6 @@ webapp.post('/login/', (req, res) => {
   var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
   cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
-      state.email = req.body.email;
       res.json({
         message: 'success',
       })
