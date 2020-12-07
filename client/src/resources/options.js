@@ -4,7 +4,7 @@ const options = [
     { value: 'crossing', label: 'Crossing'},
     { value: 'finishing', label: 'Finishing'},
     { value: 'dribbling', label: 'Dribbling'}
-    ];
+];
 
 
 module.exports = options;

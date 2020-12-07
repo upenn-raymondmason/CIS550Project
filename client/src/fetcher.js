@@ -114,4 +114,17 @@ const getPlayerData = async (name) => {
   return response.json();
 };
 
-export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers, getPlayerData};
+const getSeasonData = async (country_name, teamName) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({country_name: country_name, teamName: teamName})
+  };
+  const response = await fetch('http://localhost:8080/get_season_data/', requestOptions);
+  return response.json();
+};
+
+export {getSeasonData, getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers, getPlayerData};
