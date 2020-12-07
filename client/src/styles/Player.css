@@ -44,7 +44,7 @@
 }
 
 .PlayerPane {
-    background-color: aqua;
+    
     justify-self: left;
     float: left;
     border-radius: 20px;
@@ -52,10 +52,11 @@
     padding: 0.2rem 0.2rem;
     width: 39vw;
     height: 25vw;
+    overflow: hidden !important;
 }
 
 .ResultsPane {
-    background-color: aqua;
+    
     justify-self: right;
     float: right;
     border-radius: 20px;
@@ -66,7 +67,7 @@
 }
 
 .playerItem{
-    background-color: green;
+    
     border-radius: 15px;
     padding: 0.2rem 0.2rem;
     width: 37vw;
@@ -75,7 +76,7 @@
 }
 
 .playerStats{
-    background-color: purple;
+    
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
     width: 20vw;
@@ -95,6 +96,65 @@
     text-align: left;
 }
 
+.playerData {
+    border-radius: 20px;
+    padding: 0.2rem 0.2rem;
+    width: 39vw;
+    height: 12vh;
+    float: left;
+    display: inline-flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.playerMainContainer {
+    display: inline-block;
+}
+
+.playerTable {
+    width: 100%;
+    height: 12vh;
+}
+
+.playerTable>tbody>tr>td {
+    font-size: 10px;
+}
+
+.playerContainer {
+    width: 100%;
+    height: 30vh;
+    border-radius: 20px;
+    padding: 0.2rem 0.2rem;
+    margin-top: 100px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.playerButtons{
+    width: 50%;
+    height:100%;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons {
+    width: 100%;
+    height:60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.texts {
+    width: 100%;
+    height:20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .playerName{
     font-weight: bold;
 }
@@ -104,7 +164,7 @@
 }
 
 .playerRating {
-    background-color: purple;
+    
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
     width: 10vw;
@@ -146,3 +206,94 @@
       transform: rotate(360deg);
     }
   }
+
+.SpiderGraphLegend {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: -20px;
+}
+
+.redRectangle{
+    width: 20px;
+    height: 5px;
+    background: red;
+}
+
+.blueRectangle{
+    width: 20px;
+    height: 5px;
+    background: blue;
+}
+
+.legendText {
+    font-size: 11px;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+.center-con {
+    width: 20%;
+    height: 20%;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.round {
+    position: absolute;
+    border: 2px solid #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    
+}
+
+.cta{
+    width:100%; cursor: pointer; position: absolute;
+}
+
+.cta .arrow{left: 30%;}
+.arrow {position: absolute; bottom: 0;  margin-left:0px; width: 12px; height: 12px; background-size: contain; top:15px;}
+.segunda{margin-left: 8px;}
+.next {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHN0eWxlPi5zdDB7ZmlsbDojZmZmfTwvc3R5bGU+PHBhdGggY2xhc3M9InN0MCIgZD0iTTMxOS4xIDIxN2MyMC4yIDIwLjIgMTkuOSA1My4yLS42IDczLjdzLTUzLjUgMjAuOC03My43LjZsLTE5MC0xOTBjLTIwLjEtMjAuMi0xOS44LTUzLjIuNy03My43UzEwOSA2LjggMTI5LjEgMjdsMTkwIDE5MHoiLz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNMzE5LjEgMjkwLjVjMjAuMi0yMC4yIDE5LjktNTMuMi0uNi03My43cy01My41LTIwLjgtNzMuNy0uNmwtMTkwIDE5MGMtMjAuMiAyMC4yLTE5LjkgNTMuMi42IDczLjdzNTMuNSAyMC44IDczLjcuNmwxOTAtMTkweiIvPjwvc3ZnPg==);
+}
+
+@keyframes bounceAlpha {
+  0% {opacity: 1; transform: translateX(0px) scale(1);}
+  25%{opacity: 0; transform:translateX(10px) scale(0.9);}
+  26%{opacity: 0; transform:translateX(-10px) scale(0.9);}
+  55% {opacity: 1; transform: translateX(0px) scale(1);}
+}
+
+.bounceAlpha {
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+}
+
+.arrow.primera.bounceAlpha {
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-delay:0.2s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+}
+
+.round:hover .arrow{
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+}
+.round:hover .arrow.primera{
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-delay:0.2s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+}
+
+

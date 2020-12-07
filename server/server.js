@@ -56,14 +56,14 @@ async function run () {
     });
 
     const result = await connection.execute(
-      `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+      `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
         EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
         AS BIRTHYEAR 
         FROM player 
         WHERE PLAYER_NAME = 'Alexander Merkel')
         SELECT * from elig_players
         LEFT JOIN playerattributes
-        ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+        ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
         WHERE BIRTHYEAR <= 2000
         AND BIRTHYEAR >= 1990
         AND OVERALL_RATING <= 90
@@ -452,14 +452,14 @@ webapp.post('/get_players/', (req, res) => {
       });
   
       const result = await connection.execute(
-        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, BIRTHDAY, 
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, BIRTHDAY, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player 
           WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%'))),
           temp_res AS (SELECT * from elig_players
           LEFT JOIN playerattributes
-          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
           WHERE BIRTHYEAR <= :edate
           AND BIRTHYEAR >= :sdate
           AND ${req.body.attr} <= :maattr
@@ -498,13 +498,13 @@ webapp.post('/get_players/', (req, res) => {
       });
   
       const result = await connection.execute(
-        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player),
           temp_res as (SELECT * from elig_players
           LEFT JOIN playerattributes
-          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
           WHERE BIRTHYEAR <= :edate
           AND BIRTHYEAR >= :sdate
           AND ${req.body.attr} <= :maattr
@@ -543,13 +543,13 @@ webapp.post('/get_players/', (req, res) => {
       });
   
       const result = await connection.execute(
-        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player),
           temp_res as (SELECT * from elig_players
           LEFT JOIN playerattributes
-          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
           WHERE BIRTHYEAR <= :edate
           AND BIRTHYEAR >= :sdate),
           temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS')) 
@@ -586,14 +586,14 @@ webapp.post('/get_players/', (req, res) => {
       });
   
       const result = await connection.execute(
-        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player
           WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%'))),
           temp_res as (SELECT * from elig_players
           LEFT JOIN playerattributes
-          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
           WHERE BIRTHYEAR <= :edate
           AND BIRTHYEAR >= :sdate),
           temp_latest as (SELECT PLAYER_NAME, MAX(TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS')) 
@@ -652,14 +652,14 @@ webapp.post('/get_player_data/', (req, res) => {
       });
   
       const result = await connection.execute(
-        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_FIFA_API_ID, PLAYER_API_ID, 
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player
           WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%')))
           SELECT * from elig_players
           LEFT JOIN playerattributes
-          ON playerattributes.PLAYER_FIFA_API_ID = elig_players.PLAYER_FIFA_API_ID
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
           ORDER BY TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS') DESC`
       //, name = req.body.name, attr = req.body.attr, end = end, start = start, max = max, min = min);
       //, [req.body.name, end, start, 'overall_rating', max, 'overall_rating', min]);
