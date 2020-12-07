@@ -152,7 +152,7 @@ export default class About extends React.Component{
         <br></br>
         <h1>About</h1>
         <img src={logo} className="App-logo" alt="logo" />
-        <div class="horizontalContainer">
+        <div class="horizontalContainerSearch">
             <div class="SearchBox">
                 <Select
                     isClearable
