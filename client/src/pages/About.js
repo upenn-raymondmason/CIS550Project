@@ -5,7 +5,8 @@ import TopNavBar from '../components/TopNavBar';
 import React from 'react'
 import Select from 'react-select'
 import AreaChart from '../components/AreaChart'
-import { getSeasonData } from '../fetcher';
+import { getSeasonData, getTeamsCountry } from '../fetcher';
+import {ScrollView} from '@cantonjs/react-scroll-view';
 
 const countries = [
     { value: 'England', label: 'England'},
@@ -26,11 +27,16 @@ export default class About extends React.Component{
     super(props);
     this.state = {
         results: [],
+        checkboxes: [],
+        checkedTeams: [],
         country: undefined,
     }
     this.updateResults = this.updateResults.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.loadTeamsInCountry = this.loadTeamsInCountry.bind(this);
+    this.updateTeams = this.updateTeams.bind(this);
     this.handleNewAttrSelected = this.handleNewAttrSelected.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
   }
 
   updateResults(results) {
@@ -59,9 +65,12 @@ export default class About extends React.Component{
     this.setState({
         results: [],
     });
-    var array = ['Manchester City', "Liverpool"];
+
+    // replace with checked boxes
+    var array = this.state.checkedTeams;
     for (var i = 0; i < array.length; i++) {
-        getSeasonData('England', array[i])
+        // replace with country
+        getSeasonData(this.state.country, array[i])
             .then(res => {
             if (res.message !== 'success') {
                 console.log(res.err);
@@ -80,10 +89,47 @@ export default class About extends React.Component{
     } else {
         this.setState({
             country: valueArr.value,
+            checkedTeams: [],
+        }, () => {                              
+            //callback
+            this.loadTeamsInCountry();
         });
-
     }
   };
+
+  loadTeamsInCountry() {
+    console.log(this.state.country);
+    getTeamsCountry(this.state.country)
+        .then(res => {
+        if (res.message !== 'success') {
+            console.log(res.err);
+        } else {
+            this.updateTeams(res.data);
+        }
+    });
+  };
+
+  updateTeams(results) {
+    var data = results.map((item)=> {
+        return item.TEAM_LONG_NAME;
+    });
+    this.setState({
+        checkboxes: data,
+    });
+  };
+
+  handleCheckboxChange(team, e) {
+    if (e.target.checked) {
+        this.setState({
+            checkedTeams: this.state.checkedTeams.concat(team)
+        });
+    } else {
+        this.setState(prevState => ({
+            checkedTeams: prevState.checkedTeams.filter(el => el != team)
+        }));
+    }
+    console.log(this.state.checkedTeams);
+  }
 
   render() {
 
@@ -111,6 +157,18 @@ export default class About extends React.Component{
         </button>
         <div class="horizontalContainer">
             <div class="checkBoxes">
+                <ScrollView style={{height: '100%'}}>
+                {
+                    this.state.checkboxes.map((item, i) => (
+                        <div class="checkbox">
+                            <div> {item} </div>
+                            <label>
+                              <input type="checkbox" onChange={(e) => this.handleCheckboxChange(item, e)} /> 
+                            </label>
+                        </div>
+                    ))
+                }
+                </ScrollView>
             </div>
             <div class="AreaChart">
                 <AreaChart results={this.state.results}> </AreaChart>

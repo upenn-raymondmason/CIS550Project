@@ -685,7 +685,7 @@ webapp.post('/get_player_data/', (req, res) => {
 
 });
 
-/*** GET PLAYER DATA ENDPOINT ***/
+/*** GET SEASON ENDPOINT ***/
 webapp.post('/get_season_data/', (req, res) => {
 
   async function sql () {
@@ -725,6 +725,50 @@ webapp.post('/get_season_data/', (req, res) => {
         WHERE team_long_name = :teamName
         ORDER BY season`
      , [req.body.country_name, req.body.country_name, req.body.teamName]);
+
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
+
+/*** GET TEAMS ENDPOINT ***/
+webapp.post('/get_teams_country/', (req, res) => {
+
+  async function sql () {
+    let connection;
+    try {
+      console.log(req.body.teamName);
+
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+
+      const result = await connection.execute(
+        `WITH team_apis AS (
+          Select match.home_team_api_id as team_api_id
+          FROM Match INNER JOIN country ON Match.country_id = country.country_id
+          WHERE country.name = :country_name
+        )
+        SELECT UNIQUE(team.team_long_name)
+        FROM team_apis INNER JOIN team ON team.team_api_id = team_apis.team_api_id`
+     , [req.body.country_name]);
 
       console.log(result.rows);
       res.json({message: 'success', data: result.rows});

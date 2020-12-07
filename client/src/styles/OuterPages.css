@@ -5,6 +5,7 @@
 
 .AreaChart {
     width: 40vw;
+    height: 30vw;
     background-color: white;
     padding: 1.0rem 1.0rem;
     border-radius: 20px;
@@ -13,10 +14,16 @@
 
 .checkBoxes {
     width: 40vw;
+    height: 30vw;
     background-color: white;
     padding: 1.0rem 1.0rem;
     border-radius: 20px;
     margin: 1rem;
+}
+
+.checkbox {
+  display: flex;
+  justify-content: center;
 }
 
 .SearchBox {
