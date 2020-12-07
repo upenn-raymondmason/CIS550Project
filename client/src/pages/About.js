@@ -4,6 +4,7 @@ import TopNavBar from '../components/TopNavBar';
 import React from 'react'
 import Select from 'react-select'
 import options from '../resources/options'
+import AreaChart from '../components/AreaChart'
 
 export default class About extends React.Component{
 
@@ -33,7 +34,9 @@ export default class About extends React.Component{
                         style={{width: '25%'}}
                         />
         </div>
-        
+        <div class="AreaChart">
+            <AreaChart/>
+        </div>
         </div>
     );
   }

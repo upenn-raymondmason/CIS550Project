@@ -19,6 +19,13 @@
     width: 80vw;
 }
 
+.AreaChart {
+    width: 50vw;
+    background-color: white;
+    padding: 1.0rem 1.0rem;
+    border-radius: 20px;
+}
+
 
 .searchAttr {
     width: 80vw;
