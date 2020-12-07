@@ -6,7 +6,7 @@ const getUsers = async () => {
       Accept: 'application/json',
     },
     };
-    const response = await fetch('http://localhost:8080/users/', requestOptions);
+    const response = await fetch('https://golazo-server.herokuapp.com/users/', requestOptions);
     return response.json();
 };
 
@@ -19,7 +19,7 @@ const createUser = async (username, email, password, date) => {
       },
       body: JSON.stringify({ username: username, email: email, password: password, date: date })
     };
-    const response = await fetch('http://localhost:8080/user/', requestOptions);
+    const response = await fetch('https://golazo-server.herokuapp.com/user/', requestOptions);
     return response.json();
 };
 
@@ -32,7 +32,7 @@ const loginUser = async (email, password) => {
       },
       body: JSON.stringify({email: email, password: password })
     };
-    const response = await fetch('http://localhost:8080/login/', requestOptions);
+    const response = await fetch('https://golazo-server.herokuapp.com/login/', requestOptions);
     return response.json();
 };
 
@@ -45,7 +45,7 @@ const getUser = async (requester) => {
     },
     body: JSON.stringify({requester: requester}),
   };
-  const response = await fetch('http://localhost:8080/get_user/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/get_user/', requestOptions);
   return response.json();
 };
 
@@ -58,7 +58,7 @@ const getName = async (email) => {
     },
     body: JSON.stringify({email: email}),
   };
-  const response = await fetch('http://localhost:8080/get_name/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/get_name/', requestOptions);
   return response.json();
 };
 
@@ -71,7 +71,7 @@ const addUser = async (requester, target) => {
     },
     body: JSON.stringify({requester: requester, target: target })
   };
-  const response = await fetch('http://localhost:8080/add_user/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/add_user/', requestOptions);
   return response.json();
 };
 
@@ -84,7 +84,7 @@ const remUser = async (requester, target) => {
     },
     body: JSON.stringify({requester: requester, target: target })
   };
-  const response = await fetch('http://localhost:8080/rem_user/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/rem_user/', requestOptions);
   return response.json();
 };
 
@@ -97,7 +97,7 @@ const getPlayers = async (name, start, end, attr, min, max) => {
     },
     body: JSON.stringify({name: name, start: start, end: end, attr: attr, min: min, max: max})
   };
-  const response = await fetch('http://localhost:8080/get_players/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/get_players/', requestOptions);
   return response.json();
 };
 
@@ -110,7 +110,7 @@ const getPlayerData = async (name) => {
     },
     body: JSON.stringify({name: name})
   };
-  const response = await fetch('http://localhost:8080/get_player_data/', requestOptions);
+  const response = await fetch('https://golazo-server.herokuapp.com/get_player_data/', requestOptions);
   return response.json();
 };
 
