@@ -9,6 +9,7 @@ import Contacts from './Contacts';
 import Messaging from './Messaging';
 import Player from './Player';
 
+
 export default class App extends React.Component {
 
 	constructor(props) {

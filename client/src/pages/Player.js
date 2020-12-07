@@ -2,6 +2,7 @@ import '../styles/Player.css';
 import '../styles/Input.scss'
 import '../styles/Dropdown.css'
 import PlayerItem from '../components/PlayerItem';
+import AreaChart from '../components/AreaChart';
 import ResultItem from '../components/ResultItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
 import ContactsPane from '../components/ContactsPane';
@@ -190,7 +191,7 @@ export default class Player extends React.Component {
                         <PlayerItem id = '10' name = 'Lionel Messi' date = '01.01.2020' rating='96'></PlayerItem>
                     </div>
                     <div className="ResultsPane">
-                        <ResultItem id = '10' name = 'Lionel Messi' date = '01.01.2020' rating='96'></ResultItem>
+                        <AreaChart> </AreaChart>
                         {this.state.attribute} {this.state.min} {this.state.max} {this.state.searchName} {this.state.start} {this.state.end}
                     </div>
                 </div>

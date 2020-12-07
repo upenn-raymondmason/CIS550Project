@@ -92,8 +92,7 @@
     padding-right: 15px;
 }
 
-.playerItem {
-    background-color: #CDD6C8;
+.resultItemHeader {
     border-radius: 15px;
     padding: 0.2rem 0.6rem;
     width: 37vw;
@@ -101,7 +100,8 @@
     margin: 0.2rem auto;
 }
 
-.resultItemHeader {
+.playerItem {
+    background-color: #CDD6C8;
     border-radius: 15px;
     padding: 0.2rem 0.6rem;
     width: 37vw;
