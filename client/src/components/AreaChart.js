@@ -35,6 +35,7 @@ export default class AreaChart extends React.Component {
 
     const options = {
       theme: "light2",
+      backgroundColor: '#D1D6C300',
       title: {
         text: "Goals Per Season"
       },

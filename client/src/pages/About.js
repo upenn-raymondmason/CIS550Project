@@ -37,6 +37,7 @@ export default class About extends React.Component{
     this.updateTeams = this.updateTeams.bind(this);
     this.handleNewAttrSelected = this.handleNewAttrSelected.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.uncheckElements = this.uncheckElements.bind(this);
   }
 
   updateResults(results) {
@@ -93,6 +94,7 @@ export default class About extends React.Component{
         }, () => {                              
             //callback
             this.loadTeamsInCountry();
+            this.uncheckElements();
         });
     }
   };
@@ -130,6 +132,17 @@ export default class About extends React.Component{
     }
     console.log(this.state.checkedTeams);
   }
+  
+  uncheckElements() {
+    var uncheck=document.getElementsByTagName('input');
+    for(var i=0;i<uncheck.length;i++)
+    {
+        if(uncheck[i].type=='checkbox')
+        {
+            uncheck[i].checked=false;
+        }
+    }
+  }
 
   render() {
 
@@ -139,32 +152,38 @@ export default class About extends React.Component{
         <br></br>
         <h1>About</h1>
         <img src={logo} className="App-logo" alt="logo" />
-        <div class="SearchBox">
-            <Select
-                isClearable
-                isSearchable
-                
-                onChange={this.handleNewAttrSelected}
-                className="selector"
-                name="color"
-                options={countries}
-                
-                style={{width: '25%'}}
-            />
+        <div class="horizontalContainer">
+            <div class="SearchBox">
+                <Select
+                    isClearable
+                    isSearchable
+                    
+                    onChange={this.handleNewAttrSelected}
+                    className="selector"
+                    name="color"
+                    options={countries}
+                    
+                    style={{width: '25%'}}
+                />
+            </div>
+            <div>
+                <button className="button" onClick={this.handleSubmit}> Graph Teams </button>
+            </div>
         </div>
-        <button className="submit" onClick= {this.handleSubmit}> 
-            <img src={logo} className="Player-logo" alt="logo" />
-        </button>
         <div class="horizontalContainer">
             <div class="checkBoxes">
                 <ScrollView style={{height: '100%'}}>
+                    <div class="teams"> Teams in League </div>
                 {
                     this.state.checkboxes.map((item, i) => (
-                        <div class="checkbox">
-                            <div> {item} </div>
-                            <label>
-                              <input type="checkbox" onChange={(e) => this.handleCheckboxChange(item, e)} /> 
-                            </label>
+                        <div>
+                            <div class="checkbox">
+                                <div class="teamLabel"> {item} </div>
+                                <label>
+                                  <input class="box" type="checkbox" onChange={(e) => this.handleCheckboxChange(item, e)} /> 
+                                </label>
+                            </div>
+                            <div class="divider"/>
                         </div>
                     ))
                 }

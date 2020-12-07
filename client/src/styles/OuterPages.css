@@ -1,12 +1,13 @@
 .horizontalContainer {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .AreaChart {
     width: 40vw;
     height: 30vw;
-    background-color: white;
+    background-color: #D1D6C3D9;
     padding: 1.0rem 1.0rem;
     border-radius: 20px;
     margin: 1rem;
@@ -15,7 +16,7 @@
 .checkBoxes {
     width: 40vw;
     height: 30vw;
-    background-color: white;
+    background-color: #E5E5E5D9;
     padding: 1.0rem 1.0rem;
     border-radius: 20px;
     margin: 1rem;
@@ -23,12 +24,53 @@
 
 .checkbox {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  height: 2.5vw;
+}
+
+.button {
+  cursor: pointer;
+  border: 2px solid white;
+  padding: 8px;
+  min-width: 64px;
+  color: white;
+  background: transparent;
+  transition: all 0.1s ease-in;
+  margin-left: 15px;
+}
+ 
+.button:hover {
+  background: #D1D6C3D9;
+  color: #ffffff;
+}
+
+.teamLabel {
+  font-weight: bold;
+}
+
+.box {
+  margin-right: 1.2rem;
+}
+
+.teams {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #858B50;
+}
+
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+.divider {
+  height: 1px;
+  background: #9BA757;
 }
 
 .SearchBox {
   width: 50vw;
-  margin: 0 auto;
 }
 
 .App {
