@@ -11,7 +11,7 @@ webapp.use(cors()); // HEROKU: Add
 const bodyParser = require('body-parser');
 
 // Server port
-const port = process.env.PORT || 8080; // remove process.env for local testing
+const port = process.env.PORT || 8080; // remove process.env for local testings
 
 webapp.use(session({
   resave: false, // don't save session if unmodified
