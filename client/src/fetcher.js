@@ -114,4 +114,56 @@ const getPlayerData = async (name) => {
   return response.json();
 };
 
-export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers, getPlayerData};
+const getTeams = async (name) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({name: name})
+  };
+  const response = await fetch('http://localhost:8080/get_teams/', requestOptions);
+  return response.json();
+};
+
+const getTeamData = async (team_api_id) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({team_api_id: team_api_id})
+  };
+  const response = await fetch('http://localhost:8080/get_team_data/', requestOptions);
+  return response.json();
+};
+
+const getPlayerDataId = async (player_id, date) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({player_id: player_id, date: date})
+  };
+  const response = await fetch('http://localhost:8080/get_player_data_id/', requestOptions);
+  return response.json();
+};
+
+const getFormation = async (team_api_id, season) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({team_api_id: team_api_id, season: season})
+  };
+  const response = await fetch('http://localhost:8080/get_formation/', requestOptions);
+  return response.json();
+};
+
+export {getUsers, createUser, loginUser, getUser, getName, addUser, remUser, getPlayers, getPlayerData, getTeams, getTeamData, getPlayerDataId, getFormation};

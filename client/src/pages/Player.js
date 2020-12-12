@@ -1,14 +1,12 @@
 import '../styles/Player.css';
 import '../styles/Input.scss'
 import '../styles/Dropdown.css'
-import PlayerItem from '../components/PlayerItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
 import React, { useState } from 'react';
 import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
 import {getPlayers, getPlayerData} from '../fetcher';
-import ResultItem from '../components/ResultItem';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 const options = require('../resources/options');
@@ -169,6 +167,38 @@ export default class Player extends React.Component {
         var resultVal;
         console.log(this.state.selData);
         console.log(this.state.selName);
+        const noSmoothing = points => {
+            let d = 'M' + points[0][0].toFixed(4) + ',' + points[0][1].toFixed(4);
+            for (let i = 1; i < points.length; i++) {
+              d += 'L' + points[i][0].toFixed(4) + ',' + points[i][1].toFixed(4);
+            }
+            return d + 'z';
+          };
+        const options = {
+            size: 120,
+            axes: true, // show axes?
+            scales: 3, // show scale circles?
+            captions: true, // show captions?
+            captionMargin: 10,
+            dots: false, // show dots?
+            zoomDistance: 1.2, // where on the axes are the captions?
+            setViewBox: (options) => `-${options.captionMargin * 2} 0 ${options.size + options.captionMargin * 4} ${options.size}`, // custom viewBox ?
+            smoothing: noSmoothing, // shape smoothing function
+            axisProps: () => ({ className: 'axis' }),
+            scaleProps: () => ({ className: 'scale', fill: 'none' }),
+            shapeProps: () => ({ className: 'shape' }),
+            captionProps: () => ({
+              className: 'caption',
+              textAnchor: 'middle',
+              fontSize: 12,
+              fontFamily: 'sans-serif'
+            }),
+            dotProps: () => ({
+              className: 'dot',
+              mouseEnter: (dot) => { console.log(dot) },
+              mouseLeave: (dot) => { console.log(dot) }
+            })
+          };
         if (this.state.selData === undefined) {
             resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
         } else {
@@ -329,7 +359,7 @@ export default class Player extends React.Component {
                         }
                       ]}
                     size = {180}
-                    
+                    options = {options}
                 />
                 <div class="SpiderGraphLegend">
                     <div className = "redRectangle"/>

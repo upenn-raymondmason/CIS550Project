@@ -5,13 +5,13 @@ export const InnerTopNavItems = [
         class: 'nav-links'
     },
     {
-        title: 'About',
-        url: '/about',
+        title: 'Player Search',
+        url: '/player',
         class: 'nav-links'
     },
     {
-        title: 'Player Search',
-        url: '/player',
+        title: 'Team Search',
+        url: '/team',
         class: 'nav-links'
     },
     {
