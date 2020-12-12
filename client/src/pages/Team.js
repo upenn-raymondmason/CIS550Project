@@ -191,7 +191,11 @@ export default class Team extends React.Component {
         //console.log(this.state.selName);
         //console.log(this.state.selSeasonData);
         if (this.state.selSeasonData === undefined || this.state.selStats === undefined) {
+            if (this.state.results === undefined) {
+                resultVal = <div></div>
+            } else {
             resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
+            }
         } else {
             var col;
             var total = this.state.selSeasonData.win[this.state.seasonPos].WIN + this.state.selSeasonData.draw[this.state.seasonPos].DRAW + this.state.selSeasonData.loss[this.state.seasonPos].LOSS;

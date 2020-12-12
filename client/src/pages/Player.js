@@ -200,7 +200,11 @@ export default class Player extends React.Component {
             })
           };
         if (this.state.selData === undefined) {
+            if (this.state.results === undefined) {
+                resultVal = <div></div>
+            } else {
             resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
+            }
         } else {
             var col;
             var curr = this.state.selData[this.state.pos];
