@@ -93,7 +93,7 @@ webapp.listen(port, () => {
 
 // Root endpoint
 webapp.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Golazo server' });
+  res.json({ message: 'Welcome to Golazo server! Please Visit https://golazo-client.herokuapp.com' });
 });
 
 // Set of users 
@@ -101,7 +101,6 @@ const users = new Set();
 
 // *** LOGIN ENDPOINT ***
 webapp.post('/login/', (req, res) => {
-  //res.setHeader('Access-Control-Allow-Origin', 'https://rendezvous-cis557-client.herokuapp.com');
   console.log('LOGGING in user');
   var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
     Username: req.body.email,
