@@ -1,0 +1,73 @@
+.main {
+    background: blue;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 90vw;
+    height: 80vh;
+    margin-top: 1.5rem;
+}
+
+.profileContainer {
+    background-color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80%;
+}
+
+.profileTitle {
+    width: 100%;
+    height: 20%;
+    background-color: greenyellow;
+}
+
+.titleContainer {
+    background: linear-gradient(90deg,#34abeb 0%, #00dbde 100%);
+    border-radius: 20px;
+
+    margin: 0.5rem auto;
+    padding: 0;
+    width: 80%;
+    height: 80%;
+    box-shadow:3px 6px #00aade;
+    display: inline-block;
+    align-items: center;
+    justify-content: start;
+}
+
+.titleContainer>p {
+    font-size: 28px;
+    color: white;
+    margin: 0 auto;
+}
+
+.fav-title {
+    font-weight: bold;
+    font-size: 26px;
+    color: white;
+    height: 5%;
+    width: 100%;
+    margin: 0.5rem auto;
+}
+
+.fav-box {
+    background: linear-gradient(90deg,#34abeb 0%, #00dbde 100%);
+    border-radius: 20px;
+
+    margin: 0.5rem auto;
+    padding: 0;
+    width: 45%;
+    height: 90%;
+    box-shadow:3px 6px #00aade;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+}
+
+.profilePlayerPane {
+    background-color: grey;
+    height: 85%;
+    width: 100%;
+}

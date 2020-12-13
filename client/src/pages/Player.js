@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
-import {getPlayers, getPlayerData, addPlayer, remPlayer} from '../fetcher';
+import {getPlayers, getPlayerData, addPlayer, remPlayer, getFavPlayers} from '../fetcher';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 const options = require('../resources/options');
@@ -30,7 +30,10 @@ export default class Player extends React.Component {
             pos: 0,
             posMax: undefined,
             selPos: undefined,
-            rand: 0
+            rand: 0,
+            favPlayers: [],
+            loaded : false,
+            searched: false,
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -45,39 +48,87 @@ export default class Player extends React.Component {
         this.updateSelData = this.updateSelData.bind(this);
         this.updatePos = this.updatePos.bind(this);
         this.updateRand = this.updateRand.bind(this);
-        //this.toggle = this.toggle.bind(this);
+
+        /*const search = window.location.search; // returns the URL query String
+        console.log(search);
+        const params = new URLSearchParams(search); 
+        console.log(params.has("player"), params.has("sel"), params.get("sel"));
+        const IdFromURL = parseInt(params.get('sel'));
+        this.setState({selPos: IdFromURL}); */
+    }
+
+    componentDidMount() {
+        getFavPlayers(sessionStorage.getItem('username'))
+        .then(res => {
+            if (res.message === 'success') {
+                this.setState({favPlayers: res.data});
+                this.setState({results: res.data});
+            } else {
+                console.log('Failed to get fav players')
+            }
+        })
     }
 
     componentDidUpdate = function () {
         var likeButton = document.querySelector(".like-btn");
-        var results = this.state.results;
-        var selPos = this.state.selPos;
+        console.log(this.state.loaded, this.state.rand);
         if (likeButton !== null && this.state.rand === 0) {
             this.setState({rand: 1});
             console.log(likeButton);
-            likeButton.addEventListener("click", function(){
-                if (this.classList.value === "like-btn") { // not favourited -> add
-                    addPlayer(sessionStorage.getItem('username'), results[selPos])
+            likeButton.addEventListener("click", () => {
+                if (likeButton.classList.value === "like-btn") { // not favourited -> add
+                    addPlayer(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
                     .then(res => {
                         if (res.message !== 'success') {
                             console.log('Failed to favourite player!');
                         }
                     });
+                    var temp = this.state.favPlayers;
+                    temp.push(this.state.results[this.state.selPos]);
+                    this.setState({favPlayers: temp});
                 } else { // already favourited -> remove
-                    remPlayer(sessionStorage.getItem('username'), results[selPos])
+                    remPlayer(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
                     .then(res => {
                         if (res.message !== 'success') {
                             console.log('Failed to remove player!');
                         }
                     });
+                    var temp = this.state.favPlayers;
+                    const index = temp.findIndex(v => v.PLAYER_NAME === this.state.results[this.state.selPos].PLAYER_NAME);
+                    if (index > -1) {
+                        temp.splice(index, 1);
+                        console.log("spliced");
+                    }
+                    this.setState({favPlayers: temp});
                 }
-                this.classList.toggle("like-active");
-                console.log(this.classList);
+                likeButton.classList.toggle("like-active");
+                //console.log(likeButton.classList);
                 });
-            likeButton.classList.toggle("like-active");
         }
-        console.log(results);
-        console.log(selPos);
+
+        if (likeButton !== null && !this.state.loaded) {
+            this.setState({loaded: true});
+            console.log(this.state.favPlayers);
+            if (this.state.favPlayers.some(e => e.PLAYER_NAME === this.state.results[this.state.selPos].PLAYER_NAME)) {
+                if (likeButton.classList.value === "like-btn") {
+                    //setTimeout(() => {likeButton.classList.toggle("like-active");}, 200);
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            } else {
+                console.log('reached');
+                if (likeButton.classList.value !== "like-btn") {
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            }
+        }
+        //console.log(results);
+        //console.log(selPos);
+    }
+
+    componentWillUnmount() {
+        this.setState({rand: 0});
     }
 
     handleNewStartTyped(event) {
@@ -130,6 +181,7 @@ export default class Player extends React.Component {
             this.updateSelData(res.data);
             this.setState({posMax: res.data.length});
         });
+        this.setState({loaded: false});
         //this.forceUpdate();
     }
 
@@ -146,6 +198,8 @@ export default class Player extends React.Component {
     }
 
     handleSubmit(event) {
+        this.setState({searched: true});
+        this.setState({rand: 0});
         this.setState({selPos: undefined});
         this.setState({selData: undefined});
         var min = parseInt(this.state.min);
@@ -233,12 +287,20 @@ export default class Player extends React.Component {
               mouseLeave: (dot) => { console.log(dot) }
             })
           };
-        if (this.state.selData === undefined) {
-            if (this.state.results.length === 0) {
-                resultVal = <div><p>Please start a search by clicking the football!</p></div>
-            } else {
-            resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
-            }
+          if (!this.state.searched && this.state.selData === undefined) {
+            resultVal = <div> 
+                <p>Here are your favourited players, click on one to see detailed Stats!</p>
+                <p>Or start a new search above!</p>
+                
+             </div>
+        } else if (this.state.selData === undefined) {
+            
+            resultVal =
+                <div> 
+                    <p></p>
+                    <p>Please Select a search result to see detailed Stats!</p>
+                    
+                 </div>;
         } else {
             var col;
             var curr = this.state.selData[this.state.pos];

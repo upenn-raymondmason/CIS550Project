@@ -161,8 +161,8 @@ webapp.post('/user/', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    favPlayers: [req.body.username],
-    favTeams: req.body.date
+    favPlayers: [],
+    favTeams: [],
   };
   
   try {
@@ -248,7 +248,6 @@ webapp.post('/add_team/', (req, res) => {
     return;
   }
 
-  //AddToSet already intrinsically disallows duplicate values (will not add username again if already a contact)
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -257,7 +256,7 @@ webapp.post('/add_team/', (req, res) => {
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
-            console.log('SUCCESS ADD contact');
+            console.log('SUCCESS ADD team');
             res.json({
               message: 'success',
               added: req.body.team,
@@ -297,7 +296,7 @@ webapp.post('/rem_team/', (req, res) => {
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
-            console.log('SUCCESS REMOVE contact');
+            console.log('SUCCESS REMOVE team');
             res.json({
               message: 'success',
               removed: req.body.team,
@@ -329,7 +328,6 @@ webapp.post('/add_player/', (req, res) => {
     return;
   }
 
-  //AddToSet already intrinsically disallows duplicate values (will not add username again if already a contact)
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
@@ -397,12 +395,10 @@ webapp.post('/rem_player/', (req, res) => {
 
 });
 
-//HEROKU
+// *** GET FAV PLAYERS ENDPOINT *** //
 
-// *** GET CONTACTS ENDPOINT *** //
-
-webapp.post('/get_contacts/', (req, res) => {
-  console.log(`GET contacts of user: ${req.body.requester}`);
+webapp.post('/get_fav_players/', (req, res) => {
+  console.log(`GET FAV PLAYERS of user: ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
@@ -416,10 +412,41 @@ webapp.post('/get_contacts/', (req, res) => {
         //console.log(req);
         dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
             if (err) throw err;
-            console.log(doc[0].contacts);
+            console.log(doc[0].favPlayers);
             res.json({
               message: "success",
-              contacts: doc[0].contacts
+              data: doc[0].favPlayers
+            })
+            db.close();
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+});
+
+// *** GET FAV TEAMS ENDPOINT *** //
+
+webapp.post('/get_fav_teams/', (req, res) => {
+  console.log(`GET FAV TEAMS of user: ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
+
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");
+        //console.log(req);
+        dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
+            if (err) throw err;
+            console.log(doc[0].favTeams);
+            res.json({
+              message: "success",
+              data: doc[0].favTeams
             })
             db.close();
         });
