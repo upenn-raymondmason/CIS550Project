@@ -4,14 +4,14 @@ var session = require('express-session');
 const cognitoPoolData = require('./cognito');
 const url = 'mongodb+srv://rootuser:weakpassword@cluster0.luo48.mongodb.net/cis550?retryWrites=true&w=majority';
 const webapp = express();
-
+//HEROKU
 // enable cors in our express app
 webapp.use(cors()); // HEROKU: Add 
 // Help with parsing body of HTTP requests
 const bodyParser = require('body-parser');
 
 // Server port
-const port = process.env.PORT || 8080; // remove process.env for local testing
+const port = process.env.PORT || 8080; // remove process.env for local testings
 
 webapp.use(session({
   resave: false, // don't save session if unmodified
@@ -93,7 +93,7 @@ webapp.listen(port, () => {
 
 // Root endpoint
 webapp.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Rendezvous server' });
+  res.json({ message: 'Welcome to Golazo server' });
 });
 
 // Set of users 
@@ -161,8 +161,8 @@ webapp.post('/user/', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    favPlayers: [req.body.username],
-    favTeams: req.body.date
+    favPlayers: [],
+    favTeams: [],
   };
   
   try {
@@ -233,37 +233,36 @@ webapp.post('/users/', (req, res) => {
   }   
 });
 
-// *** ADD USER ENDPOINT *** //
-webapp.post('/add_user/', (req, res) => {
-  console.log('ADD contact');
+// *** ADD TEAM ENDPOINT *** //
+webapp.post('/add_team/', (req, res) => {
+  console.log(`ADD FAV TEAM ${req.body.team} for ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
     return;
   }
 
-  if (!req.body.target) {
+  if (!req.body.team) {
     console.log(req);
     res.status(400).json({ error: 'missing target username' });
     return;
   }
 
-  //AddToSet already intrinsically disallows duplicate values (will not add username again if already a contact)
   try {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("cis550");          
-        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {contacts: req.body.target}})
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {favTeams: req.body.team}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
-            console.log('SUCCESS ADD contact');
+            console.log('SUCCESS ADD team');
             res.json({
               message: 'success',
-              added: req.body.target,
+              added: req.body.team,
             });
           } else {
-            res.status(400).json({error: 'Target user already contact'});
+            res.status(400).json({error: 'Target team already favourite'});
           }
         });
       }); 
@@ -274,18 +273,18 @@ webapp.post('/add_user/', (req, res) => {
 
 });
 
-// *** REMOVE USER ENDPOINT ** //
-webapp.post('/rem_user/', (req, res) => {
-  console.log(`REMOVE ${req.body.target} as contact FROM ${req.body.requester}`);
+// *** REMOVE TEAM ENDPOINT ** //
+webapp.post('/rem_team/', (req, res) => {
+  console.log(`REMOVE ${req.body.team} FROM FAVS OF ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
     return;
   }
 
-  if (!req.body.target) {
+  if (!req.body.team) {
     console.log(req);
-    res.status(400).json({ error: 'missing target username' });
+    res.status(400).json({ error: 'missing target team name' });
     return;
   }
 
@@ -293,14 +292,14 @@ webapp.post('/rem_user/', (req, res) => {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("cis550");
-        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {contacts: req.body.target}})
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {favTeams: req.body.team}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
-            console.log('SUCCESS REMOVE contact');
+            console.log('SUCCESS REMOVE team');
             res.json({
               message: 'success',
-              removed: req.body.target,
+              removed: req.body.team,
             });
           } else {
             res.status(400).json({error: 'Failed to modify'});
@@ -314,10 +313,92 @@ webapp.post('/rem_user/', (req, res) => {
 
 });
 
-// *** GET CONTACTS ENDPOINT *** //
+// *** ADD Player ENDPOINT *** //
+webapp.post('/add_player/', (req, res) => {
+  console.log(`ADD FAV PLAYER ${req.body.player} for ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
 
-webapp.post('/get_contacts/', (req, res) => {
-  console.log(`GET contacts of user: ${req.body.requester}`);
+  if (!req.body.player) {
+    console.log(req);
+    res.status(400).json({ error: 'missing target playerName' });
+    return;
+  }
+
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");          
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {favPlayers: req.body.player}})
+        .then((result) => {
+          const { matchedCount, modifiedCount} = result;
+          if (matchedCount && modifiedCount) {
+            console.log('SUCCESS ADD player');
+            res.json({
+              message: 'success',
+              added: req.body.player,
+            });
+          } else {
+            res.status(400).json({error: 'Target player already favourite'});
+          }
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+
+});
+
+// *** REMOVE Player ENDPOINT ** //
+webapp.post('/rem_player/', (req, res) => {
+  console.log(`REMOVE ${req.body.player} FROM FAVS OF ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
+
+  if (!req.body.player) {
+    console.log(req);
+    res.status(400).json({ error: 'missing target team name' });
+    return;
+  }
+
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {favPlayers: req.body.player}})
+        .then((result) => {
+
+          const { matchedCount, modifiedCount} = result;
+          console.log(matchedCount, modifiedCount);
+          if (matchedCount && modifiedCount) {
+            console.log('SUCCESS REMOVE player');
+            res.json({
+              message: 'success',
+              removed: req.body.player,
+            });
+          } else {
+            res.status(400).json({error: 'Failed to modify'});
+          }
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+
+});
+
+// *** GET FAV PLAYERS ENDPOINT *** //
+
+webapp.post('/get_fav_players/', (req, res) => {
+  console.log(`GET FAV PLAYERS of user: ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
@@ -331,10 +412,41 @@ webapp.post('/get_contacts/', (req, res) => {
         //console.log(req);
         dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
             if (err) throw err;
-            console.log(doc[0].contacts);
+            console.log(doc[0].favPlayers);
             res.json({
               message: "success",
-              contacts: doc[0].contacts
+              data: doc[0].favPlayers
+            })
+            db.close();
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+});
+
+// *** GET FAV TEAMS ENDPOINT *** //
+
+webapp.post('/get_fav_teams/', (req, res) => {
+  console.log(`GET FAV TEAMS of user: ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
+
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");
+        //console.log(req);
+        dbo.collection("users").find({"username": req.body.requester}).toArray((err, doc) => {
+            if (err) throw err;
+            console.log(doc[0].favTeams);
+            res.json({
+              message: "success",
+              data: doc[0].favTeams
             })
             db.close();
         });
@@ -405,7 +517,6 @@ webapp.post('/get_name/', (req, res) => {
     return;
   }   
 });
-  
 /*** GET PLAYERS ENDPOINT ***/
 webapp.post('/get_players/', (req, res) => {
   console.log(`GET PLAYERS with: name - ${req.body.name}, attr - ${req.body.attr}, min - ${req.body.min}, max - ${req.body.max}, start - ${req.body.start}, end - ${req.body.end}`);
@@ -456,7 +567,7 @@ webapp.post('/get_players/', (req, res) => {
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player 
-          WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%'))),
+          WHERE UPPER(PLAYER_NAME) LIKE UPPER(CONCAT('%', CONCAT(:search, '%')))),
           temp_res AS (SELECT * from elig_players
           LEFT JOIN playerattributes
           ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
@@ -590,7 +701,7 @@ webapp.post('/get_players/', (req, res) => {
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player
-          WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%'))),
+          WHERE UPPER(PLAYER_NAME) LIKE UPPER(CONCAT('%', CONCAT(:search, '%')))),
           temp_res as (SELECT * from elig_players
           LEFT JOIN playerattributes
           ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
@@ -656,7 +767,7 @@ webapp.post('/get_player_data/', (req, res) => {
           EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
           AS BIRTHYEAR 
           FROM player
-          WHERE PLAYER_NAME LIKE CONCAT('%', CONCAT(:search, '%')))
+          WHERE UPPER(PLAYER_NAME) LIKE UPPER(CONCAT('%', CONCAT(:search, '%'))))
           SELECT * from elig_players
           LEFT JOIN playerattributes
           ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
@@ -685,6 +796,371 @@ webapp.post('/get_player_data/', (req, res) => {
 
 });
 
+/*** GET PLAYER DATA ID ENDPOINT ***/
+webapp.post('/get_player_data_id/', (req, res) => {
+  console.log(`GETTING PLAYER DATA FROM ID ${req.body.player_id}`);
+
+  if(!req.body.player_id) {
+    console.log(req);
+    res.status(400).json({ error: 'missing id' });
+    return;
+  }
+
+  async function sql () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+      console.log(req.body.date);
+      const result = await connection.execute(
+        `WITH elig_players as (SELECT PLAYER_NAME, PLAYER_API_ID, 
+          EXTRACT(year FROM TO_DATE(BIRTHDAY, 'YYYY-MM-DD HH24:MI:SS')) 
+          AS BIRTHYEAR 
+          FROM player
+          WHERE PLAYER_API_ID = ${req.body.player_id})
+          SELECT * from elig_players
+          LEFT JOIN playerattributes
+          ON playerattributes.PLAYER_API_ID = elig_players.PLAYER_API_ID
+          WHERE TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS') < TO_DATE(:eval, 'YYYY-MM-DD HH24:MI:SS')
+          ORDER BY TO_DATE(DATE_EVALUATED, 'YYYY-MM-DD HH24:MI:SS') DESC` // LIMIT 1 NOT WORKING WHY?
+          , [req.body.date]);
+
+      console.log(result.rows[0]);
+      res.json({message: 'success', data: result.rows[0]});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
+
+/*** GET FORMATION NDPOINT ***/
+webapp.post('/get_formation/', (req, res) => {
+  console.log(`GETTING FORMATION FOR TEAM ID ${req.body.team_api_id} IN SEASON ${req.body.season}`);
+
+  if(!req.body.team_api_id || !req.body.season) {
+    console.log(req);
+    res.status(400).json({ error: 'missing id/season' });
+    return;
+  }
+
+  async function sql () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+
+      const result = await connection.execute(
+        `
+        WITH matches AS (
+          SELECT * FROM MATCH WHERE (HOME_TEAM_API_ID = ${req.body.team_api_id} OR AWAY_TEAM_API_ID = ${req.body.team_api_id}) AND SEASON = :season),
+          homes AS (
+          SELECT matches.*, TEAM.TEAM_LONG_NAME AS HOME_TEAM_NAME FROM matches JOIN TEAM ON matches.HOME_TEAM_API_ID = TEAM.TEAM_API_ID),
+          aways AS (
+          SELECT homes.*, TEAM.TEAM_LONG_NAME AS AWAY_TEAM_NAME FROM homes JOIN TEAM ON homes.AWAY_TEAM_API_ID = TEAM.TEAM_API_ID)
+          SELECT aways.*, COUNTRY.NAME AS COUNTRY_NAME FROM aways JOIN COUNTRY ON aways.COUNTRY_ID = COUNTRY.COUNTRY_ID ORDER BY STAGE
+        `
+      , [req.body.season]);
+
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
+
+/*** GET TEAMS ENDPOINT ***/
+webapp.post('/get_teams/', (req, res) => {
+  console.log(`GETTING TEAMS FOR ${req.body.name}`);
+
+  if(!req.body.name) {
+    console.log(req);
+    res.status(400).json({ error: 'missing name' });
+    return;
+  }
+
+  async function sql () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+  
+      const result = await connection.execute(
+        `SELECT * FROM TEAM WHERE UPPER(TEAM_LONG_NAME) 
+        LIKE UPPER(CONCAT('%', CONCAT(:search, '%'))) 
+        ORDER BY TEAM_LONG_NAME ASC
+        `,
+        [req.body.name]);
+
+      var out = result.rows;
+
+        console.log(`GETTING RATINGS FOR TEAMS SEARCHED WITH ${req.body.name}`);
+
+      for (var id = 0; id < out.length; id++) {
+
+        const val = await connection.execute(
+          `WITH home_temp AS (
+            SELECT TEAM.TEAM_LONG_NAME, MATCH.* FROM TEAM JOIN MATCH ON TEAM.TEAM_API_ID = MATCH.HOME_TEAM_API_ID WHERE UPPER(TEAM_LONG_NAME) = :search),
+            pivot_home_ids as (select MATCH_API_ID, PLAYER_ID
+            from home_temp
+            Unpivot (player_id for pid in (HOME_PLAYER_1, HOME_PLAYER_2, HOME_PLAYER_3, HOME_PLAYER_4, HOME_PLAYER_5, HOME_PLAYER_6, HOME_PLAYER_7, HOME_PLAYER_8, HOME_PLAYER_9, HOME_PLAYER_10, HOME_PLAYER_11))),
+            home_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+            from pivot_home_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_home_ids.player_id
+            group by match_api_id),
+            away_temp AS (
+            SELECT TEAM.TEAM_LONG_NAME, MATCH.* FROM TEAM JOIN MATCH ON TEAM.TEAM_API_ID = MATCH.AWAY_TEAM_API_ID WHERE TEAM_LONG_NAME = :search),
+            pivot_away_ids as (select MATCH_API_ID, PLAYER_ID
+            from away_temp
+            Unpivot (player_id for pid in (AWAY_PLAYER_1, AWAY_PLAYER_2, AWAY_PLAYER_3, AWAY_PLAYER_4, AWAY_PLAYER_5, AWAY_PLAYER_6, AWAY_PLAYER_7, AWAY_PLAYER_8, AWAY_PLAYER_9, AWAY_PLAYER_10, AWAY_PLAYER_11))),
+            away_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+            from pivot_away_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_away_ids.player_id
+            group by match_api_id),
+            all_matches as (
+            SELECT *
+            FROM home_avgs
+            UNION ALL
+            SELECT *
+            FROM away_avgs)
+            SELECT avg(avg_player_rating) as avg_alltime_rating
+            FROM all_matches`,
+            [out[id].TEAM_LONG_NAME, out[id].TEAM_LONG_NAME]);
+
+              console.log(val);
+        out[id].OVERALL_RATING = parseInt(val.rows[0].AVG_ALLTIME_RATING);
+      }
+
+      console.log(out);
+      res.json({message: 'success', data: out});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
+
+/*** GET TEAM DATA ENDPOINT ***/
+webapp.post('/get_team_data/', (req, res) => {
+  console.log(`GETTING TEAM DATA FOR ${req.body.team_api_id}`);
+
+  if(!req.body.team_api_id) {
+    console.log(req);
+    res.status(400).json({ error: 'missing team_api_id' });
+    return;
+  }
+
+  async function sql () {
+    let connection;
+  
+    try {
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+  
+      const wins = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = :search),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = :search),
+          wins AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL > AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL < AWAY_TEAM_GOAL)
+          SELECT COUNT(*) AS win
+          from wins
+        `, [req.body.team_api_id]);
+
+      const draws = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id}),
+          draws AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL = AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL = AWAY_TEAM_GOAL)
+          SELECT COUNT(*) AS draw
+          from draws          
+        `
+      );
+
+      const losses = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id}),
+          losses AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL < AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL > AWAY_TEAM_GOAL)
+          SELECT COUNT(*) AS loss
+          from losses               
+        `
+      );
+
+      const goals_scored = await connection.execute(
+        `WITH temp(goals) AS (
+          SELECT HOME_TEAM_GOAL FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}
+          UNION ALL
+          SELECT AWAY_TEAM_GOAL FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id})
+          SELECT avg(goals) as average_goals from temp
+        `
+      );
+        
+      const goals_conceded = await connection.execute(
+        `WITH temp(goals) AS (
+          SELECT AWAY_TEAM_GOAL FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}
+          UNION ALL
+          SELECT HOME_TEAM_GOAL FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id})
+          SELECT avg(goals) as average_goals from temp
+        `
+      );
+          
+      const goals_conceded_season = await connection.execute(
+        `WITH temp AS (
+          SELECT AWAY_TEAM_GOAL as goal, SEASON FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}
+          UNION ALL
+          SELECT HOME_TEAM_GOAL as goal, SEASON FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id})
+          SELECT SEASON, avg(goal) as average_goals from temp GROUP BY SEASON ORDER BY SEASON DESC
+        `
+      );
+
+      const wins_season = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id}),
+          wins AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL > AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL < AWAY_TEAM_GOAL)
+          SELECT SEASON, COUNT(*) AS win
+          from wins GROUP BY SEASON ORDER BY SEASON DESC
+        `);
+
+      const draws_season = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id}),
+          draws AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL = AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL = AWAY_TEAM_GOAL)
+          SELECT SEASON, COUNT(*) AS draw
+          from draws GROUP BY SEASON ORDER BY SEASON DESC         
+        `
+      );
+
+      const losses_season = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}),
+          away_temp as (SELECT * FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id}),
+          losses AS (
+          SELECT * FROM home_temp WHERE HOME_TEAM_GOAL < AWAY_TEAM_GOAL
+          UNION ALL
+          SELECT * FROM away_temp WHERE HOME_TEAM_GOAL > AWAY_TEAM_GOAL)
+          SELECT SEASON, COUNT(*) AS loss
+          from losses GROUP BY SEASON ORDER BY SEASON DESC              
+        `
+      );
+
+      const goals_scored_season = await connection.execute(
+        `WITH temp AS (
+          SELECT HOME_TEAM_GOAL as goal, SEASON FROM MATCH WHERE HOME_TEAM_API_ID = ${req.body.team_api_id}
+          UNION ALL
+          SELECT AWAY_TEAM_GOAL as goal, SEASON FROM MATCH WHERE AWAY_TEAM_API_ID = ${req.body.team_api_id})
+          SELECT SEASON, avg(goal) as average_goals from temp GROUP BY SEASON ORDER BY SEASON DESC
+        `
+      );
+
+      const formation = await connection.execute(
+        `
+        WITH matches AS (
+          SELECT * FROM MATCH WHERE (HOME_TEAM_API_ID = ${req.body.team_api_id} OR AWAY_TEAM_API_ID = ${req.body.team_api_id}) AND SEASON = '2015/2016' ORDER BY STAGE),
+          homes AS (
+          SELECT matches.*, TEAM.TEAM_LONG_NAME AS HOME_TEAM_NAME FROM matches JOIN TEAM ON matches.HOME_TEAM_API_ID = TEAM.TEAM_API_ID),
+          aways AS (
+          SELECT homes.*, TEAM.TEAM_LONG_NAME AS AWAY_TEAM_NAME FROM homes JOIN TEAM ON homes.AWAY_TEAM_API_ID = TEAM.TEAM_API_ID)
+          SELECT aways.*, COUNTRY.NAME AS COUNTRY_NAME FROM aways JOIN COUNTRY ON aways.COUNTRY_ID = COUNTRY.COUNTRY_ID ORDER BY STAGE
+        `
+      );
+      /*
+      const season_rating = await connection.execute(
+        `
+        `
+      ); Query to get overall rating of team for each season using only matches from that season.
+      */
+      
+
+      var total = wins.rows[0].WIN + draws.rows[0].DRAW + losses.rows[0].LOSS;
+
+      var out = {win: parseInt(wins.rows[0].WIN / total * 100), draw: parseInt(draws.rows[0].DRAW / total * 100), loss: parseInt(losses.rows[0].LOSS / total * 100), goals_scored: Math.round(goals_scored.rows[0].AVERAGE_GOALS * 100) / 100, goals_conceded: Math.round(goals_conceded.rows[0].AVERAGE_GOALS * 100) / 100};
+      var outSeason = {win: wins_season.rows, draw: draws_season.rows, loss: losses_season.rows, goals_scored: goals_scored_season.rows, goals_conceded: goals_conceded_season.rows, OVERALL_RATING: [ 90, 90, 90, 90, 90, 90, 90, 90]};
+
+      console.log(out);
+      res.json({message: 'success', data: {stats: out, season: outSeason, formation: formation.rows}});
+      //res.json({message: 'success'});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
 /*** GET SEASON ENDPOINT ***/
 webapp.post('/get_season_data/', (req, res) => {
 
@@ -789,7 +1265,6 @@ webapp.post('/get_teams_country/', (req, res) => {
   sql();
 
 });
-
 // Default response for any other request
 webapp.use((_req, res) => {
   res.status(404);

@@ -6,6 +6,7 @@ import Features from './Features';
 import Register from './Register';
 import Profile from './Profile';
 import Player from './Player';
+import Team from './Team';
 
 export default class App extends React.Component {
 
@@ -65,6 +66,13 @@ export default class App extends React.Component {
 							path="/player"
 							render={() => (
 								<Player />
+							)}
+						/>
+						<Route
+							exact
+							path="/team"
+							render={() => (
+								<Team />
 							)}
 						/>
 					</Switch>

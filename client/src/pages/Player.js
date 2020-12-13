@@ -1,17 +1,16 @@
 import '../styles/Player.css';
 import '../styles/Input.scss'
 import '../styles/Dropdown.css'
-import PlayerItem from '../components/PlayerItem';
 import InnerTopNavBar from '../components/InnerTopNavBar';
 import React, { useState } from 'react';
 import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
-import {getPlayers, getPlayerData} from '../fetcher';
-import ResultItem from '../components/ResultItem';
+import {getPlayers, getPlayerData, addPlayer, remPlayer, getFavPlayers} from '../fetcher';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 const options = require('../resources/options');
+//Fav Button from https://codepen.io/mapk/pen/ZOQqaQ
 
 export default class Player extends React.Component {
 
@@ -31,7 +30,10 @@ export default class Player extends React.Component {
             pos: 0,
             posMax: undefined,
             selPos: undefined,
-            rand: 0
+            rand: 0,
+            favPlayers: [],
+            loaded : false,
+            searched: false,
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -46,6 +48,91 @@ export default class Player extends React.Component {
         this.updateSelData = this.updateSelData.bind(this);
         this.updatePos = this.updatePos.bind(this);
         this.updateRand = this.updateRand.bind(this);
+
+        /*const search = window.location.search; // returns the URL query String
+        console.log(search);
+        const params = new URLSearchParams(search); 
+        console.log(params.has("player"), params.has("sel"), params.get("sel"));
+        const IdFromURL = parseInt(params.get('sel'));
+        this.setState({selPos: IdFromURL}); */
+    }
+
+    componentDidMount() {
+        getFavPlayers(sessionStorage.getItem('username'))
+        .then(res => {
+            if (res.message === 'success') {
+                this.setState({favPlayers: res.data});
+                this.setState({results: res.data});
+            } else {
+                console.log('Failed to get fav players')
+            }
+        })
+    }
+
+    componentDidUpdate = function () {
+        var likeButton = document.querySelector(".like-btn");
+        console.log(this.state.loaded, this.state.rand);
+        if (likeButton !== null && this.state.rand === 0) {
+            this.setState({rand: 1});
+            console.log(likeButton);
+            likeButton.addEventListener("click", () => {
+                if (likeButton.classList.value === "like-btn") { // not favourited -> add
+                    addPlayer(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to favourite player!');
+                        }
+                    });
+                    var temp = this.state.favPlayers;
+                    temp.push(this.state.results[this.state.selPos]);
+                    this.setState({favPlayers: temp});
+                } else { // already favourited -> remove
+                    this.setState({selData: undefined});
+                    this.setState({})
+                    remPlayer(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to remove player!');
+                        }
+                    });
+                    var temp = this.state.favPlayers;
+                    const index = temp.findIndex(v => v.PLAYER_NAME === this.state.results[this.state.selPos].PLAYER_NAME);
+                    if (index > -1) {
+                        temp.splice(index, 1);
+                        console.log("spliced");
+                    }
+                    this.setState({favPlayers: temp});
+                    this.setState({selPos: undefined});
+                    this.setState({rand: 0});
+                }
+                likeButton.classList.toggle("like-active");
+                //console.log(likeButton.classList);
+                });
+        }
+
+        if (likeButton !== null && !this.state.loaded) {
+            this.setState({loaded: true});
+            console.log(this.state.favPlayers);
+            if (this.state.favPlayers.some(e => e.PLAYER_NAME === this.state.results[this.state.selPos].PLAYER_NAME)) {
+                if (likeButton.classList.value === "like-btn") {
+                    //setTimeout(() => {likeButton.classList.toggle("like-active");}, 200);
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            } else {
+                console.log('reached');
+                if (likeButton.classList.value !== "like-btn") {
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            }
+        }
+        //console.log(results);
+        //console.log(selPos);
+    }
+
+    componentWillUnmount() {
+        this.setState({rand: 0});
     }
 
     handleNewStartTyped(event) {
@@ -98,6 +185,7 @@ export default class Player extends React.Component {
             this.updateSelData(res.data);
             this.setState({posMax: res.data.length});
         });
+        this.setState({loaded: false});
         //this.forceUpdate();
     }
 
@@ -114,6 +202,8 @@ export default class Player extends React.Component {
     }
 
     handleSubmit(event) {
+        this.setState({searched: true});
+        this.setState({rand: 0});
         this.setState({selPos: undefined});
         this.setState({selData: undefined});
         var min = parseInt(this.state.min);
@@ -163,14 +253,63 @@ export default class Player extends React.Component {
             }
         }
     }
-    
+
     render() {
         const { inputValue, menuIsOpen } = this.state;
         var resultVal;
         console.log(this.state.selData);
         console.log(this.state.selName);
-        if (this.state.selData === undefined) {
-            resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
+        const noSmoothing = points => {
+            let d = 'M' + points[0][0].toFixed(4) + ',' + points[0][1].toFixed(4);
+            for (let i = 1; i < points.length; i++) {
+              d += 'L' + points[i][0].toFixed(4) + ',' + points[i][1].toFixed(4);
+            }
+            return d + 'z';
+          };
+        const options = {
+            size: 120,
+            axes: true, // show axes?
+            scales: 3, // show scale circles?
+            captions: true, // show captions?
+            captionMargin: 10,
+            dots: false, // show dots?
+            zoomDistance: 1.2, // where on the axes are the captions?
+            setViewBox: (options) => `-${options.captionMargin * 2} 0 ${options.size + options.captionMargin * 4} ${options.size}`, // custom viewBox ?
+            smoothing: noSmoothing, // shape smoothing function
+            axisProps: () => ({ className: 'axis' }),
+            scaleProps: () => ({ className: 'scale', fill: 'none' }),
+            shapeProps: () => ({ className: 'shape' }),
+            captionProps: () => ({
+              className: 'caption',
+              textAnchor: 'middle',
+              fontSize: 12,
+              fontFamily: 'sans-serif'
+            }),
+            dotProps: () => ({
+              className: 'dot',
+              mouseEnter: (dot) => { console.log(dot) },
+              mouseLeave: (dot) => { console.log(dot) }
+            })
+          };
+          if (!this.state.searched && this.state.selData === undefined) {
+              if (this.state.searchName === undefined) {
+                resultVal = <div> 
+                <p>Here are your favourited players, click on one to see detailed Stats!</p>
+                <p>Or start a new search above!</p>
+                
+                </div>;
+              } else {
+                resultVal = <div><p>Please start a search by clicking the rotating football!</p></div>;
+              }
+            
+        } else if (this.state.selData === undefined) {
+            
+            resultVal =
+                <div> 
+                    <p></p>
+                    <p>Please Select a search result to see detailed Stats!</p>
+                    
+                 </div>;
         } else {
             var col;
             var curr = this.state.selData[this.state.pos];
@@ -190,7 +329,9 @@ export default class Player extends React.Component {
                         <li className = "playerDate">Born: {curr.BIRTHYEAR} Selected Eval: {new Date(curr.DATE_EVALUATED).getMonth() + 1}.{new Date(curr.DATE_EVALUATED).getFullYear()}</li>
                     </ul>
                 </div>
-               
+                <div>
+                    <span class="like-btn" id = 'like-btn'></span>
+                </div>
                <div className="playerRating" style = {{'background': col}}>
                     {curr.OVERALL_RATING}
                </div>
@@ -329,7 +470,7 @@ export default class Player extends React.Component {
                         }
                       ]}
                     size = {180}
-                    
+                    options = {options}
                 />
                 <div class="SpiderGraphLegend">
                     <div className = "redRectangle"/>
@@ -347,7 +488,7 @@ export default class Player extends React.Component {
         
         return (
 
-            <div >
+            <div id="test">
                 <InnerTopNavBar></InnerTopNavBar>
                 <div className="Players">
                     

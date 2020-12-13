@@ -1,4 +1,4 @@
-.Players{
+.Teams{
     background-color: rgba(210, 226, 222, 0.8);
     margin-left: auto;
     margin-right: auto;
@@ -9,87 +9,62 @@
     height: 80vh;
 }
 
-.PlayerSearch{
+.teamSearch{
     display: inline-block;
 }
 
-.searchBar {
+.teamSearchBar {
     display: inline-flex;
     align-items: flex-end;
     width: 80vw;
 }
 
-
-.searchAttr {
-    width: 80vw;
-    display: flex;
-    justify-content: flex-end;
-    float:right;
-    align-items: center;
-}
-
-.dateContainer{
-    width:10vw;
-    padding-left: 10px;
-}
-
-.dropContainer {
-    width:15vw;
-    padding-left: 10px;
-}
-
-.enterContainer{
-    width:5vw;
-    padding-left: 10px;
-}
-
-.PlayerPane {
-    
+.teamPane {
     justify-self: left;
     float: left;
     border-radius: 20px;
     margin-top: 1.5rem;
     padding: 0.2rem 0.2rem;
-    width: 39vw;
-    height: 25vw;
+    width: 30vw;
+    height: 31vw;
     overflow: hidden !important;
 }
 
-.ResultsPane {
-    
+.teamResultsPane {
     justify-self: right;
     float: right;
     border-radius: 20px;
     margin-top: 1.5rem;
     padding: 0.2rem 0.2rem;
-    width: 39vw;
-    height: 25vw;
+    width: 48vw;
+    height: 31vw;
 }
 
-.playerItem{
+.teamItem{
+    display: flex;
+    align-items: center;
+    justify-content: start;
     border-radius: 15px;
     padding: 0.2rem 0.2rem;
-    width: 37vw;
+    width: 100%;
     height: 5vw;
     margin: 0.2rem auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.playerStats{
+.teamStats{
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
-    width: 18vw;
+    width: 40%;
     height: 4vw;
     margin: 0.2rem auto;
+    margin-right: 0;
     float: left;
     display: flex;
     justify-content: start;
     align-items: center;
 }
 
-.playerStats>ul {
+.teamStats>ul {
     list-style: none;
     list-style-type: none;
     padding: 0;
@@ -97,10 +72,10 @@
     text-align: left;
 }
 
-.playerData {
+.teamData {
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
-    width: 39vw;
+    width: 100%;
     height: 12vh;
     float: left;
     display: inline-flex;
@@ -108,39 +83,42 @@
     align-items: center;
 }
 
-.playerMainContainer {
+.teamMainContainer {
     display: inline-block;
 }
 
-.playerTable {
+.teamTable {
     width: 100%;
     height: 12vh;
 }
 
-.playerTable>tbody>tr>td {
+.teamTable>tbody>tr>td {
     font-size: 10px;
 }
 
-.playerContainer {
-    width: 100%;
-    height: 30vh;
+.teamContainer {
+    width: 47vw;
+    height: 36vh;
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
     margin-top: 100px;
     display: flex;
     align-items: flex-end;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
-.playerButtons{
-    width: 50%;
+.teamButtons{
+    width: 25%;
     height:100%;
     display: inline-block;
     align-items: center;
     justify-content: center;
+    margin: 0;
+    padding: 0;
 }
 
-.buttons {
+.Tbuttons {
+    margin: auto;
     width: 100%;
     height:60%;
     display: flex;
@@ -148,7 +126,7 @@
     justify-content: center;
 }
 
-.texts {
+.Ttexts {
     width: 100%;
     height:20%;
     display: flex;
@@ -156,21 +134,21 @@
     justify-content: center;
 }
 
-.playerName{
+.teamName{
     font-weight: bold;
 }
 
-.playerDate {
+.teamDate {
     font-style: italic;
 }
 
-.playerRating {
-    
+.teamRating {
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
     width: 10vw;
     height: 4vw;
     margin: 0.2rem auto;
+    margin-right: 10px;
     float: right;
     display: flex;
     justify-content: center;
@@ -208,33 +186,16 @@
     }
   }
 
-.SpiderGraphLegend {
-    align-items: center;
+.Scenter-con {
+    width: 30%;
+    height: 20%;  
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin-top: -20px;
-}
-
-.redRectangle{
-    width: 20px;
-    height: 5px;
-    background: red;
-}
-
-.blueRectangle{
-    width: 20px;
-    height: 5px;
-    background: blue;
-}
-
-.legendText {
-    font-size: 11px;
-    padding-left: 10px;
-    padding-right: 15px;
 }
 
 .center-con {
-    width: 20%;
+    width: 45%;
     height: 20%;  
     display: flex;
     align-items: center;
@@ -297,30 +258,4 @@
     animation-timing-function:linear;
 }
 
-.like-btn {
-  display: inline-block;
-  Cursor: pointer;
-  width: 80px;
-  height: 80px;
-}
 
-.like-btn {
-  background: url('https://i.ibb.co/vw78mf3/heart.png') no-repeat 0% 50%;
-  background-size: 2900%;
-}
-
-.like-active {
-  animation-name: animate;
-  animation-duration: .8s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-}
-.like-active {
-  animation-timing-function: steps(28);
-}
-
-@keyframes animate {
-  0%   { background-position: left;  }
-  50%  { background-position: right; }
-  100% { background-position: right; }
-}
