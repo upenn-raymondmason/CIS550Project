@@ -191,8 +191,9 @@ export default class Team extends React.Component {
         //console.log(this.state.selName);
         //console.log(this.state.selSeasonData);
         if (this.state.selSeasonData === undefined || this.state.selStats === undefined) {
-            if (this.state.results === undefined) {
-                resultVal = <div></div>
+            console.log(this.state.results);
+            if (this.state.results.length === 0) {
+                resultVal = <div><p>Please start a search by clicking the football!</p></div>
             } else {
             resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
             }

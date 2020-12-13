@@ -6,10 +6,11 @@ import React, { useState } from 'react';
 import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import Select from 'react-select';
-import {getPlayers, getPlayerData} from '../fetcher';
+import {getPlayers, getPlayerData, addPlayer, remPlayer} from '../fetcher';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 const options = require('../resources/options');
+//Fav Button from https://codepen.io/mapk/pen/ZOQqaQ
 
 export default class Player extends React.Component {
 
@@ -44,6 +45,39 @@ export default class Player extends React.Component {
         this.updateSelData = this.updateSelData.bind(this);
         this.updatePos = this.updatePos.bind(this);
         this.updateRand = this.updateRand.bind(this);
+        //this.toggle = this.toggle.bind(this);
+    }
+
+    componentDidUpdate = function () {
+        var likeButton = document.querySelector(".like-btn");
+        var results = this.state.results;
+        var selPos = this.state.selPos;
+        if (likeButton !== null && this.state.rand === 0) {
+            this.setState({rand: 1});
+            console.log(likeButton);
+            likeButton.addEventListener("click", function(){
+                if (this.classList.value === "like-btn") { // not favourited -> add
+                    addPlayer(sessionStorage.getItem('username'), results[selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to favourite player!');
+                        }
+                    });
+                } else { // already favourited -> remove
+                    remPlayer(sessionStorage.getItem('username'), results[selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to remove player!');
+                        }
+                    });
+                }
+                this.classList.toggle("like-active");
+                console.log(this.classList);
+                });
+            likeButton.classList.toggle("like-active");
+        }
+        console.log(results);
+        console.log(selPos);
     }
 
     handleNewStartTyped(event) {
@@ -161,7 +195,7 @@ export default class Player extends React.Component {
             }
         }
     }
-    
+
     render() {
         const { inputValue, menuIsOpen } = this.state;
         var resultVal;
@@ -200,8 +234,8 @@ export default class Player extends React.Component {
             })
           };
         if (this.state.selData === undefined) {
-            if (this.state.results === undefined) {
-                resultVal = <div></div>
+            if (this.state.results.length === 0) {
+                resultVal = <div><p>Please start a search by clicking the football!</p></div>
             } else {
             resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
             }
@@ -224,7 +258,9 @@ export default class Player extends React.Component {
                         <li className = "playerDate">Born: {curr.BIRTHYEAR} Selected Eval: {new Date(curr.DATE_EVALUATED).getMonth() + 1}.{new Date(curr.DATE_EVALUATED).getFullYear()}</li>
                     </ul>
                 </div>
-               
+                <div>
+                    <span class="like-btn" id = 'like-btn'></span>
+                </div>
                <div className="playerRating" style = {{'background': col}}>
                     {curr.OVERALL_RATING}
                </div>
@@ -381,7 +417,7 @@ export default class Player extends React.Component {
         
         return (
 
-            <div >
+            <div id="test">
                 <InnerTopNavBar></InnerTopNavBar>
                 <div className="Players">
                     

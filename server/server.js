@@ -233,16 +233,16 @@ webapp.post('/users/', (req, res) => {
   }   
 });
 
-// *** ADD USER ENDPOINT *** //
-webapp.post('/add_user/', (req, res) => {
-  console.log('ADD contact');
+// *** ADD TEAM ENDPOINT *** //
+webapp.post('/add_team/', (req, res) => {
+  console.log(`ADD FAV TEAM ${req.body.team} for ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
     return;
   }
 
-  if (!req.body.target) {
+  if (!req.body.team) {
     console.log(req);
     res.status(400).json({ error: 'missing target username' });
     return;
@@ -253,17 +253,17 @@ webapp.post('/add_user/', (req, res) => {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("cis550");          
-        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {contacts: req.body.target}})
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {favTeams: req.body.team}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
             console.log('SUCCESS ADD contact');
             res.json({
               message: 'success',
-              added: req.body.target,
+              added: req.body.team,
             });
           } else {
-            res.status(400).json({error: 'Target user already contact'});
+            res.status(400).json({error: 'Target team already favourite'});
           }
         });
       }); 
@@ -274,18 +274,18 @@ webapp.post('/add_user/', (req, res) => {
 
 });
 
-// *** REMOVE USER ENDPOINT ** //
-webapp.post('/rem_user/', (req, res) => {
-  console.log(`REMOVE ${req.body.target} as contact FROM ${req.body.requester}`);
+// *** REMOVE TEAM ENDPOINT ** //
+webapp.post('/rem_team/', (req, res) => {
+  console.log(`REMOVE ${req.body.team} FROM FAVS OF ${req.body.requester}`);
   if (!req.body.requester) {
     console.log(req);
     res.status(400).json({ error: 'missing requester username' });
     return;
   }
 
-  if (!req.body.target) {
+  if (!req.body.team) {
     console.log(req);
-    res.status(400).json({ error: 'missing target username' });
+    res.status(400).json({ error: 'missing target team name' });
     return;
   }
 
@@ -293,14 +293,14 @@ webapp.post('/rem_user/', (req, res) => {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("cis550");
-        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {contacts: req.body.target}})
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {favTeams: req.body.team}})
         .then((result) => {
           const { matchedCount, modifiedCount} = result;
           if (matchedCount && modifiedCount) {
             console.log('SUCCESS REMOVE contact');
             res.json({
               message: 'success',
-              removed: req.body.target,
+              removed: req.body.team,
             });
           } else {
             res.status(400).json({error: 'Failed to modify'});
@@ -313,6 +313,90 @@ webapp.post('/rem_user/', (req, res) => {
   }   
 
 });
+
+// *** ADD Player ENDPOINT *** //
+webapp.post('/add_player/', (req, res) => {
+  console.log(`ADD FAV PLAYER ${req.body.player} for ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
+
+  if (!req.body.player) {
+    console.log(req);
+    res.status(400).json({ error: 'missing target playerName' });
+    return;
+  }
+
+  //AddToSet already intrinsically disallows duplicate values (will not add username again if already a contact)
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");          
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$addToSet: {favPlayers: req.body.player}})
+        .then((result) => {
+          const { matchedCount, modifiedCount} = result;
+          if (matchedCount && modifiedCount) {
+            console.log('SUCCESS ADD player');
+            res.json({
+              message: 'success',
+              added: req.body.player,
+            });
+          } else {
+            res.status(400).json({error: 'Target player already favourite'});
+          }
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+
+});
+
+// *** REMOVE Player ENDPOINT ** //
+webapp.post('/rem_player/', (req, res) => {
+  console.log(`REMOVE ${req.body.player} FROM FAVS OF ${req.body.requester}`);
+  if (!req.body.requester) {
+    console.log(req);
+    res.status(400).json({ error: 'missing requester username' });
+    return;
+  }
+
+  if (!req.body.player) {
+    console.log(req);
+    res.status(400).json({ error: 'missing target team name' });
+    return;
+  }
+
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");
+        dbo.collection("users").updateOne({"username": req.body.requester}, {$pull: {favPlayers: req.body.player}})
+        .then((result) => {
+
+          const { matchedCount, modifiedCount} = result;
+          console.log(matchedCount, modifiedCount);
+          if (matchedCount && modifiedCount) {
+            console.log('SUCCESS REMOVE player');
+            res.json({
+              message: 'success',
+              removed: req.body.player,
+            });
+          } else {
+            res.status(400).json({error: 'Failed to modify'});
+          }
+        });
+      }); 
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }   
+
+});
+
 
 // *** GET CONTACTS ENDPOINT *** //
 

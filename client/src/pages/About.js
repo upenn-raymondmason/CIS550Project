@@ -21,17 +21,7 @@ export default class About extends React.Component{
         <h1>About</h1>
         <img src={logo} className="App-logo" alt="logo" />
         <div style={{width: '50vw'}}>
-        <Select
-                        isClearable
-                        isSearchable
-                        
-                        onChange={this.hanldeNewAttrSelected}
-                        className="selector"
-                        name="color"
-                        options={options}
-                        
-                        style={{width: '25%'}}
-                        />
+        
         </div>
         
         </div>
