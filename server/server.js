@@ -93,7 +93,7 @@ webapp.listen(port, () => {
 
 // Root endpoint
 webapp.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Rendezvous server' });
+  res.json({ message: 'Welcome to Golazo server' });
 });
 
 // Set of users 
@@ -517,7 +517,6 @@ webapp.post('/get_name/', (req, res) => {
     return;
   }   
 });
-  
 /*** GET PLAYERS ENDPOINT ***/
 webapp.post('/get_players/', (req, res) => {
   console.log(`GET PLAYERS with: name - ${req.body.name}, attr - ${req.body.attr}, min - ${req.body.min}, max - ${req.body.max}, start - ${req.body.start}, end - ${req.body.end}`);
@@ -1162,7 +1161,110 @@ webapp.post('/get_team_data/', (req, res) => {
   sql();
 
 });
+/*** GET SEASON ENDPOINT ***/
+webapp.post('/get_season_data/', (req, res) => {
 
+  async function sql () {
+    let connection;
+    try {
+      console.log(req.body.teamName);
+
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+
+      const result = await connection.execute(
+        `WITH home_goals as (
+            SELECT home_team_api_id, SUM(home_team_goal) as home_goals, season
+            FROM Match INNER JOIN country ON match.country_id = country.country_id
+            WHERE country.name = :country_name
+            GROUP BY home_team_api_id, season
+        ),
+        away_goals as (
+            SELECT away_team_api_id, SUM(away_team_goal) as away_goals, season
+            FROM Match INNER JOIN country ON match.country_id = country.country_id
+            WHERE country.name = :country_name2
+            GROUP BY away_team_api_id, season
+        ),
+        all_goals as (
+            SELECT home_team_api_id as team_id,  (away_goals + home_goals) as total_goals, 
+            away_goals, home_goals, home_goals.season
+            FROM home_goals 
+            LEFT JOIN away_goals
+            ON home_goals.home_team_api_id = away_goals.away_team_api_id
+            WHERE home_goals.season = away_goals.season
+        )
+        SELECT team_id, total_goals, away_goals, home_goals, team_long_name, season
+        FROM all_goals INNER JOIN team ON all_goals.team_id = team.team_api_id
+        WHERE team_long_name = :teamName
+        ORDER BY season`
+     , [req.body.country_name, req.body.country_name, req.body.teamName]);
+
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
+
+/*** GET TEAMS ENDPOINT ***/
+webapp.post('/get_teams_country/', (req, res) => {
+
+  async function sql () {
+    let connection;
+    try {
+      console.log(req.body.teamName);
+
+      connection = await oracledb.getConnection( {
+        user          : "admin",
+        password      : "password",
+        connectString : "cis450finalproject.cw89abu33cyf.us-east-1.rds.amazonaws.com/SoccerDB"
+      });
+
+      const result = await connection.execute(
+        `WITH team_apis AS (
+          Select match.home_team_api_id as team_api_id
+          FROM Match INNER JOIN country ON Match.country_id = country.country_id
+          WHERE country.name = :country_name
+        )
+        SELECT UNIQUE(team.team_long_name)
+        FROM team_apis INNER JOIN team ON team.team_api_id = team_apis.team_api_id`
+     , [req.body.country_name]);
+
+      console.log(result.rows);
+      res.json({message: 'success', data: result.rows});
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({err: err});
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+
+  sql();
+
+});
 // Default response for any other request
 webapp.use((_req, res) => {
   res.status(404);
