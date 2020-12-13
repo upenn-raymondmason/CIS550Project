@@ -67,7 +67,7 @@ export default class Profile extends React.Component{
         <div className = 'main'>
           <div className = 'profileTitle'>
             <div className = 'titleContainer'>
-              <p style = {{'fontWeight': 'bold'}}>Welcome Raymond!</p>
+              <p style = {{'fontWeight': 'bold'}}>Welcome {sessionStorage.getItem('username')}!</p>
               <p style = {{'fontStyle':'italic', 'font-size': '18px'}}>Start a search for a player or team using the pages in the top right!</p>
               <p style = {{'fontStyle':'italic', 'font-size': '18px'}}>Your favourited players and teams will appear here!</p>
            </div>

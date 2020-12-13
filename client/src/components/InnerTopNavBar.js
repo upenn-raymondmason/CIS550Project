@@ -16,14 +16,23 @@ class InnerTopNavBar extends Component {
                 <div className="Navbar-icon"></div>
                 <ul className={'NavBar-menu'}>
                     {InnerTopNavItems.map((item, i) => {
-                        return(
-                            <li key={i}>
-                                <a className={item.class} href={item.url}>
-                                    {item.title}
-                                </a>
-                            </li>
-                        )
-
+                        if (i === 4) {
+                            return(
+                                <li key={i}>
+                                    <a className={item.class} href={item.url} onClick={() => {window.FB.logout()}}>
+                                        {item.title}
+                                    </a>
+                                </li>
+                            )
+                        } else {
+                            return(
+                                <li key={i}>
+                                    <a className={item.class} href={item.url}>
+                                        {item.title}
+                                    </a>
+                                </li>
+                            )
+                        }
                     })}
 
                 </ul>

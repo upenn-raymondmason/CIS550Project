@@ -156,6 +156,62 @@ webapp.post('/create_google_user/', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     googleid: req.body.googleid,
+    facebookid: "GOOGLE USER NA",
+    password: "GOOGLE USER NA",
+    favPlayers: [],
+    favTeams: [],
+  };
+  
+  try {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("cis550");
+        dbo.collection("users").insertOne(newUser, function(err) {
+            if (err) throw err;
+            console.log("user inserted");
+            res.json({
+              message: 'success',
+              user: newUser,
+            });
+            db.close();
+        });
+      });
+
+      
+  } catch (error) {
+    res.status(400).json({ error: err.message });
+    return;
+  }    
+});
+
+// *** CREATE NEW FB USER ENDPOINT *** //
+webapp.post('/create_fb_user/', (req, res) => {
+  console.log('CREATE a FB user');
+  if (!req.body.username) {
+    console.log(req);
+    res.status(400).json({ error: 'missing username' });
+    return;
+  }
+
+  if (!req.body.email) {
+    console.log(req);
+    res.status(400).json({ error: 'missing email' });
+    return;
+  }
+
+  if (!req.body.facebookid) {
+    console.log(req);
+    res.status(400).json({ error: 'missing fb id' });
+    return;
+  }
+
+
+  // create user object
+  const newUser = {
+    username: req.body.username,
+    email: req.body.email,
+    googleid: "FB USER NA",
+    facebookid: req.body.facebookid,
     password: "GOOGLE USER NA",
     favPlayers: [],
     favTeams: [],
@@ -214,6 +270,7 @@ webapp.post('/user/', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     googleid: 'NA',
+    facebookid: 'NA',
     password: req.body.password,
     favPlayers: [],
     favTeams: [],
@@ -272,7 +329,7 @@ webapp.post('/users/', (req, res) => {
         if (err) throw err;
         var dbo = db.db("cis550");
         //can modify to return more fields than just username
-        dbo.collection("users").find({}, {'fields': {_id : 0, username: 1, googleid: 1}}).toArray((err, doc) => {
+        dbo.collection("users").find({}, {'fields': {_id : 0, username: 1, googleid: 1, facebookid: 1}}).toArray((err, doc) => {
             if (err) throw err;
             console.log(doc);
             res.json({

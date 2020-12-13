@@ -260,5 +260,18 @@ const createGoogleUser = async (email, username, googleid) => {
   return response.json();
 };
 
-export {getUsers, createUser, loginUser, getUser, getName, addTeam, remTeam, addPlayer, remPlayer, getPlayers, getPlayerData, getTeams, getTeamData, getPlayerDataId, getFormation, getFavPlayers, getFavTeams, getTeamsCountry, getSeasonData, createGoogleUser};
+const createFBUser = async (email, username, facebookid) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({email: email, username: username, facebookid: facebookid})
+  };
+  const response = await fetch('http://localhost:8080/create_fb_user/', requestOptions);
+  return response.json();
+};
+
+export {getUsers, createUser, loginUser, getUser, getName, addTeam, remTeam, addPlayer, remPlayer, getPlayers, getPlayerData, getTeams, getTeamData, getPlayerDataId, getFormation, getFavPlayers, getFavTeams, getTeamsCountry, getSeasonData, createGoogleUser, createFBUser};
 
