@@ -122,7 +122,7 @@ webapp.post('/login/', (req, res) => {
       if (err) {
         console.log(err);
         res.status(404).json({ error: err });
-        return; // WHY is this not returning/terminating before the MONGODB code to get in database if user credentials not correct in cognito
+        return;
       }
     },
 
