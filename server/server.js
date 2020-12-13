@@ -93,7 +93,7 @@ webapp.listen(port, () => {
 
 // Root endpoint
 webapp.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Golazo server' });
+  res.json({ message: 'Welcome to Rendezvous server' });
 });
 
 // Set of users 
@@ -517,6 +517,7 @@ webapp.post('/get_name/', (req, res) => {
     return;
   }   
 });
+  
 /*** GET PLAYERS ENDPOINT ***/
 webapp.post('/get_players/', (req, res) => {
   console.log(`GET PLAYERS with: name - ${req.body.name}, attr - ${req.body.attr}, min - ${req.body.min}, max - ${req.body.max}, start - ${req.body.start}, end - ${req.body.end}`);
