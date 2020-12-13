@@ -140,6 +140,19 @@ const getPlayerData = async (name) => {
   return response.json();
 };
 
+const getSeasonData = async (country_name, teamName) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({country_name: country_name, teamName: teamName})
+  };
+  const response = await fetch('http://localhost:8080/get_season_data/', requestOptions);
+  return response.json();
+};
+
 const getTeams = async (name) => {
   const requestOptions = {
     method: 'POST',
@@ -154,6 +167,7 @@ const getTeams = async (name) => {
 };
 
 const getTeamData = async (team_api_id) => {
+
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -163,6 +177,19 @@ const getTeamData = async (team_api_id) => {
     body: JSON.stringify({team_api_id: team_api_id})
   };
   const response = await fetch('http://localhost:8080/get_team_data/', requestOptions);
+  return response.json();
+};  
+
+const getTeamsCountry = async (country_name) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({country_name: country_name})
+  };
+  const response = await fetch('http://localhost:8080/get_teams_country/', requestOptions);
   return response.json();
 };
 
@@ -221,4 +248,5 @@ const getFavTeams = async (requester) => {
 };
 
 
-export {getUsers, createUser, loginUser, getUser, getName, addTeam, remTeam, addPlayer, remPlayer, getPlayers, getPlayerData, getTeams, getTeamData, getPlayerDataId, getFormation, getFavPlayers, getFavTeams};
+export {getUsers, createUser, loginUser, getUser, getName, addTeam, remTeam, addPlayer, remPlayer, getPlayers, getPlayerData, getTeams, getTeamData, getPlayerDataId, getFormation, getFavPlayers, getFavTeams, getTeamsCountry, getSeasonData};
+
