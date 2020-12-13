@@ -67,7 +67,6 @@
 }
 
 .playerItem{
-    background-color:yellowgreen;
     border-radius: 15px;
     padding: 0.2rem 0.2rem;
     width: 37vw;
@@ -79,7 +78,6 @@
 }
 
 .playerStats{
-    background-color: yellow;
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
     width: 18vw;

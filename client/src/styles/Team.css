@@ -41,6 +41,9 @@
 }
 
 .teamItem{
+    display: flex;
+    align-items: center;
+    justify-content: start;
     border-radius: 15px;
     padding: 0.2rem 0.2rem;
     width: 100%;
@@ -51,9 +54,10 @@
 .teamStats{
     border-radius: 20px;
     padding: 0.2rem 0.2rem;
-    width: 50%;
+    width: 40%;
     height: 4vw;
     margin: 0.2rem auto;
+    margin-right: 0;
     float: left;
     display: flex;
     justify-content: start;
@@ -109,6 +113,8 @@
     display: inline-block;
     align-items: center;
     justify-content: center;
+    margin: 0;
+    padding: 0;
 }
 
 .Tbuttons {

@@ -85,3 +85,37 @@
     margin: 0;
     padding: 0;
 }
+
+.likeContainer {
+    padding: 0;
+    margin: 0;
+    width: 20%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.like-btn {
+    display: inline-block;
+    Cursor: pointer;
+    width: 80px;
+    height: 80px;
+    padding:0;
+    margin: 0;
+  }
+  
+  .like-btn {
+    background: url('https://i.ibb.co/vw78mf3/heart.png') no-repeat 0% 50%;
+    background-size: 2900%;
+  }
+  
+  .like-active {
+    animation-name: animate;
+    animation-duration: .8s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+  }
+  .like-active {
+    animation-timing-function: steps(28);
+  }

@@ -1,15 +1,14 @@
 .main {
-    background: blue;
     display: inline-block;
     justify-content: center;
     align-items: center;
     width: 90vw;
     height: 80vh;
     margin-top: 1.5rem;
+    opacity: 0.85;
 }
 
 .profileContainer {
-    background-color: green;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +19,6 @@
 .profileTitle {
     width: 100%;
     height: 20%;
-    background-color: greenyellow;
 }
 
 .titleContainer {
@@ -67,7 +65,6 @@
 }
 
 .profilePlayerPane {
-    background-color: grey;
     height: 85%;
     width: 100%;
 }

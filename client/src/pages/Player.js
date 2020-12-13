@@ -87,6 +87,8 @@ export default class Player extends React.Component {
                     temp.push(this.state.results[this.state.selPos]);
                     this.setState({favPlayers: temp});
                 } else { // already favourited -> remove
+                    this.setState({selData: undefined});
+                    this.setState({})
                     remPlayer(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
                     .then(res => {
                         if (res.message !== 'success') {
@@ -100,6 +102,8 @@ export default class Player extends React.Component {
                         console.log("spliced");
                     }
                     this.setState({favPlayers: temp});
+                    this.setState({selPos: undefined});
+                    this.setState({rand: 0});
                 }
                 likeButton.classList.toggle("like-active");
                 //console.log(likeButton.classList);
@@ -288,11 +292,16 @@ export default class Player extends React.Component {
             })
           };
           if (!this.state.searched && this.state.selData === undefined) {
-            resultVal = <div> 
+              if (this.state.searchName === undefined) {
+                resultVal = <div> 
                 <p>Here are your favourited players, click on one to see detailed Stats!</p>
                 <p>Or start a new search above!</p>
                 
-             </div>
+                </div>;
+              } else {
+                resultVal = <div><p>Please start a search by clicking the rotating football!</p></div>;
+              }
+            
         } else if (this.state.selData === undefined) {
             
             resultVal =

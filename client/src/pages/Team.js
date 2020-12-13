@@ -8,7 +8,7 @@ import {ScrollView} from '@cantonjs/react-scroll-view';
 import logo from '../resources/logo.svg';
 import base from '../resources/pitchBase.svg';
 import Select from 'react-select';
-import {getTeams, getTeamData, getPlayerDataId, getFormation} from '../fetcher';
+import {getTeams, getTeamData, getPlayerDataId, getFormation, getFavTeams, addTeam, remTeam} from '../fetcher';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 import {XYPlot, MarkSeries} from 'react-vis';
@@ -34,6 +34,10 @@ export default class Team extends React.Component {
             seasons: ["2015/2016", "2014/2015", "2013/2014", "2012/2013", "2011/2012", "2010/2011", "2009/2010", "2008/2009"],
             selPlayerData: undefined,
             selPosition: undefined,
+            favTeams: [],
+            rand: 0,
+            loaded: false,
+            searched: false,
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -53,15 +57,98 @@ export default class Team extends React.Component {
     };
 
 
-    /*hanldeNewAttrSelected(valueArr) {
+    componentDidMount() {
+        getFavTeams(sessionStorage.getItem('username'))
+        .then(res => {
+            if (res.message === 'success') {
+                this.setState({favTeams: res.data});
+                this.setState({results: res.data});
+            } else {
+                console.log('Failed to get fav teams')
+            }
+        })
+    }
 
-        if (valueArr === null) {
-            this.setState({attribute: undefined});
-        } else {
-            this.setState({attribute: valueArr.value});
+    componentDidUpdate = function () {
+        var likeButton = document.querySelector(".like-btn");
+        console.log(this.state.loaded, this.state.rand);
+        if (likeButton !== null && this.state.rand === 0) {
+            this.setState({rand: 1});
+            console.log(likeButton);
+            likeButton.addEventListener("click", () => {
+                if (likeButton.classList.value === "like-btn") { // not favourited -> add
+                    addTeam(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to favourite team!');
+                        }
+                    });
+                    var temp = this.state.favTeams;
+                    temp.push(this.state.results[this.state.selPos]);
+                    this.setState({favTeams: temp});
+                } else { // already favourited -> remove
+                    //NEW SETS
+                    this.setState({selSeasonData: undefined});
+                    setTimeout(() => {console.log("waiting")}, 2000);
+                    this.setState({selData: undefined});
+                    this.setState({selName: undefined});
+                    this.setState({selName: undefined});
+                    this.setState({selNameLong: undefined});
+                    this.setState({selNameShort: undefined});
+                    this.setState({seasonPos: undefined});
+                    this.setState({pos: undefined});
+                    this.setState({posMax: undefined});
+                    this.setState({seasonPosMax: undefined});
+                    this.setState({selStats: undefined});
+                    this.setState({selPlayerData: undefined});
+                    this.setState({selPosition: undefined});
+                    remTeam(sessionStorage.getItem('username'), this.state.results[this.state.selPos])
+                    .then(res => {
+                        if (res.message !== 'success') {
+                            console.log('Failed to remove team!');
+                        }
+                    });
+                    var temp = this.state.favTeams;
+                    const index = temp.findIndex(v => v.TEAM_LONG_NAME === this.state.results[this.state.selPos].TEAM_LONG_NAME);
+                    if (index > -1) {
+                        temp.splice(index, 1);
+                        console.log("spliced");
+                    }
+                    this.setState({favTeams: temp});
+                    this.setState({selPos: undefined});
+                    this.setState({rand: 0});
+                    
+                }
+                likeButton.classList.toggle("like-active");
+                //console.log(likeButton.classList);
+                });
         }
-        
-    }; */
+
+        if (likeButton !== null && !this.state.loaded) {
+            this.setState({loaded: true});
+            console.log(this.state.favTeams);
+            if (this.state.favTeams.some(e => e.TEAM_LONG_NAME === this.state.results[this.state.selPos].TEAM_LONG_NAME)) {
+                if (likeButton.classList.value === "like-btn") {
+                    //setTimeout(() => {likeButton.classList.toggle("like-active");}, 200);
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            } else {
+                console.log('reached');
+                if (likeButton.classList.value !== "like-btn") {
+                    likeButton.classList.toggle("like-active");
+                    console.log("toggled");
+                }
+            }
+        }
+        //console.log(results);
+        //console.log(selPos);
+    }
+
+    componentWillUnmount() {
+        this.setState({rand: 0});
+    }
+
 
     updateResults(results) {
         this.setState({results: results});
@@ -81,6 +168,7 @@ export default class Team extends React.Component {
             this.setState({posMax: res.data.formation.length});
             this.setState({seasonPosMax: res.data.season.draw.length});
         });
+        this.setState({loaded: false});
         // get match histories, split out posMax part and create new state
     }
 
@@ -159,6 +247,8 @@ export default class Team extends React.Component {
     }
 
     handleSubmit(event) {
+        this.setState({searched: true});
+        this.setState({rand: 0});
         this.setState({selPos: undefined});
         this.setState({selData: undefined});
         this.setState({selName: undefined});
@@ -192,10 +282,16 @@ export default class Team extends React.Component {
         //console.log(this.state.selSeasonData);
         if (this.state.selSeasonData === undefined || this.state.selStats === undefined) {
             console.log(this.state.results);
-            if (this.state.results.length === 0) {
-                resultVal = <div><p>Please start a search by clicking the football!</p></div>
+            if (this.state.searchName === undefined) {
+                resultVal = <div> 
+            <p>Here are your favourited teams, click on one to see detailed Stats!</p>
+            <p>Or start a new search above!</p>
+            
+         </div>
+            } else if (!this.state.searched) {
+                resultVal = <div><p>Please start a search by clicking the rotating football!</p></div>
             } else {
-            resultVal = <div> <p>Please Select a search result to see detailed Stats!</p> </div>;
+                resultVal = <div><p>Please select a search result to see detailed Stats!</p></div>
             }
         } else {
             var col;
@@ -409,6 +505,9 @@ export default class Team extends React.Component {
                         <li className = "teamName">{this.state.selNameLong}</li>
                         <li className = "teamDate">{this.state.selNameShort}             Selected Season: {this.state.seasons[this.state.seasonPos]}</li>
                     </ul>
+                </div>
+                <div className = "likeContainer">
+                    <span class="like-btn" id = 'like-btn'></span>
                 </div>
                 <div className = "teamButtons">
                 

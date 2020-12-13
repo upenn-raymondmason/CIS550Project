@@ -1,7 +1,7 @@
 import '../styles/Profile.css'
 import React from 'react';
 import InnerTopNavBar from '../components/InnerTopNavBar';
-import {getFavPlayers} from './../fetcher';
+import {getFavPlayers, getFavTeams} from './../fetcher';
 import {ScrollView} from '@cantonjs/react-scroll-view';
 
 export default class Profile extends React.Component{
@@ -28,6 +28,15 @@ export default class Profile extends React.Component{
         console.log("failed to get fav players");
       }
     });
+    getFavTeams(sessionStorage.getItem('username'))
+    .then (res => {
+      if (res.message === 'success') {
+        this.setState({favTeams: res.data});
+        console.log(res.data);
+      } else {
+        console.log("failed to get fav players");
+      }
+    });
   }
 
   /*async handleDeactivateAcc(event) {
@@ -48,6 +57,7 @@ export default class Profile extends React.Component{
     //window.location.href = `http://localhost:3000/player?sel=${newSelPos}`;
     window.location.assign('/player');
   }
+
 
 //change className later
   render() {
@@ -106,6 +116,40 @@ export default class Profile extends React.Component{
             <div className='fav-box'>
                     <h2 className='fav-title'>Your Favourite Teams</h2>
                       <br></br>
+                      <div className="profilePlayerPane">
+                        <ScrollView style={{height: '100%'}}>
+                        {this.state.favTeams.map((item, i) => (
+                                    //<div onClick = {this.props.updateReceiver(item.firstname)}>
+                                    <div>
+                                          <div className="playerItem" key = {item.ID} style = {{cursor: 'pointer'}} onClick={() => {window.location.assign('/team')}}>
+                                              <div className = "playerStats">
+                                                <ul>
+                                                <li className = "teamName">{item.TEAM_LONG_NAME}</li>    
+                                                <li className = "teamDate"> {item.TEAM_SHORT_NAME}</li>
+                                                </ul>
+                                              </div>
+                                              {item.OVERALL_RATING < 65 &&
+                                                  <div className="playerRating" style = {{'background': 'linear-gradient(90deg,#b08d57 0%, #804a00 100%)'}}>
+                                                      {item.OVERALL_RATING}
+                                                  </div>
+                                              }
+                                              {(item.OVERALL_RATING > 64 && item.OVERALL_RATING < 75) &&
+                                                  <div className="playerRating" style = {{'background': 'linear-gradient(90deg,#d3d3d3 0%, #363838 100%)'}}>
+                                                      {item.OVERALL_RATING}
+                                                  </div>
+                                              }
+                                              {item.OVERALL_RATING > 74 &&
+                                                  <div className="playerRating" style = {{'background': 'radial-gradient(#ffdf00, #d4af37, #ffd700)'}}>
+                                                      {item.OVERALL_RATING}
+                                                  </div>
+                                              }
+                                          </div>
+                                          
+                                      </div>
+
+                        ))}
+                        </ScrollView>
+                    </div>
             </div>
           </div>
         </div>
