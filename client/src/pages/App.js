@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import React from 'react'
 import LandingPage from './LandingPage';
-import About from './About'
+import League from './League'
 import Features from './Features';
 import Register from './Register';
 import Profile from './Profile';
@@ -35,9 +35,9 @@ export default class App extends React.Component {
 						/>
 						<Route
 							exact
-							path="/about"
+							path="/league"
 							render={() => (
-								<About />
+								<League />
 							)}
 						/>
 						<Route

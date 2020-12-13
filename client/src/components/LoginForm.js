@@ -1,6 +1,6 @@
 import React from 'react'
 import '../styles/LoginForm.css'
-import {loginUser, getName, getUser} from '../fetcher'
+import {loginUser, getName, getUser, getUsers, createGoogleUser} from '../fetcher'
 import GoogleLogin from 'react-google-login'
 
 export default class LoginForm extends React.Component {
@@ -18,7 +18,7 @@ export default class LoginForm extends React.Component {
         
 
         this.handleSubmit = this.handleSubmit.bind(this);
-
+        this.handleGoogleSubmit = this.handleGoogleSubmit.bind(this);
     }
 
 
@@ -72,6 +72,35 @@ export default class LoginForm extends React.Component {
         }
     }
 
+    async handleGoogleSubmit(res) {
+        var users;
+        await getUsers().then(res => {
+            if (res.message === 'success') {
+                users = res.users;
+            } else {
+                console.log("Failed to get users!");
+            }
+        })
+        console.log(users);
+        if (!users.some(e => e.googleid === res.profileObj.googleId)) { //user does not exist,so create new one
+            console.log('Create User');
+            await createGoogleUser(res.profileObj.email, res.profileObj.givenName, res.profileObj.googleId)
+            .then(response => {
+                console.log(response);
+                if (response.message === 'success') {
+                    sessionStorage.setItem('username', res.profileObj.givenName);
+                    console.log('reached');
+                    window.location.assign('/profile');
+                } else {
+                    alert('Error in Google Login, please login using email and password!')
+                }
+            }); 
+        } else {
+            sessionStorage.setItem('username', res.profileObj.givenName); // technically should be id (but would require extra fetch)
+            window.location.assign('/profile');
+        }
+    }
+
     render() {
         return (
             <div className='LoginForm'>
@@ -81,7 +110,7 @@ export default class LoginForm extends React.Component {
                 <GoogleLogin
                 clientId="1094452346635-fpk0us508l6psu1i64et4ahmiu1uamo9.apps.googleusercontent.com"
                 buttonText="Login"
-                onSuccess={(response) => {console.log(response);}}
+                onSuccess={(response) => {console.log(response); this.handleGoogleSubmit(response)}}
                 onFailure={(response) => {console.log(response);}}
                 cookiePolicy={'single_host_origin'}
                 />

@@ -1,9 +1,5 @@
 export const InnerTopNavItems = [
-    {
-        title: 'Home',
-        url: '/',
-        class: 'nav-links'
-    },
+    
     {
         title: 'Player Search',
         url: '/player',
@@ -15,8 +11,18 @@ export const InnerTopNavItems = [
         class: 'nav-links'
     },
     {
+        title: 'League View',
+        url: '/league',
+        class: 'nav-links'
+    },
+    {
         title: 'Profile',
         url: '/profile',
+        class: 'nav-links'
+    },
+    {
+        title: 'Logout',
+        url: '/',
         class: 'nav-links'
     }
 

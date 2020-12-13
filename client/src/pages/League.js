@@ -1,7 +1,7 @@
 import logo from '../resources/logo.svg';
 import '../styles/OuterPages.css';
 import '../styles/Player.css';
-import TopNavBar from '../components/TopNavBar';
+import InnerTopNavBar from '../components/InnerTopNavBar';
 import React from 'react'
 import Select from 'react-select'
 import AreaChart from '../components/AreaChart'
@@ -21,7 +21,7 @@ const countries = [
     { value: 'Switzerland', label: 'Switzerland'}
 ];
 
-export default class About extends React.Component{
+export default class League extends React.Component{
 
   constructor(props) {
     super(props);
@@ -147,10 +147,15 @@ export default class About extends React.Component{
   render() {
 
     return (
-      <div data-testid="AboutBox" id="AboutBox" className="App">
-        <TopNavBar></TopNavBar>
+      <div className="App">
+        <InnerTopNavBar></InnerTopNavBar>
         <br></br>
-        <h1>About</h1>
+        <div className = 'profileTitle' style = {{'margin-bottom':'20px', opacity: 0.7}}>
+            <div className = 'titleContainer'>
+              <p style = {{'fontWeight': 'bold'}}>Team Stats by League</p>
+              <p style = {{'fontStyle':'italic', 'font-size': '18px'}}>Select a country and view goals scored by each team across the seasons!</p>
+           </div>
+          </div>
         <img src={logo} className="App-logo" alt="logo" />
         <div class="horizontalContainerSearch">
             <div class="SearchBox">
