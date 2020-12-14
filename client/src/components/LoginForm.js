@@ -156,7 +156,6 @@ export default class LoginForm extends React.Component {
                 buttonText="Login"
                 onSuccess={(response) => {console.log(response); this.handleGoogleSubmit(response)}}
                 onFailure={(response) => {console.log(response);}}
-                cookiePolicy={'single_host_origin'}
                 />
                 <FacebookLogin
                     appId="385958696185978"
