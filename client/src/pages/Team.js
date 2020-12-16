@@ -38,6 +38,7 @@ export default class Team extends React.Component {
             rand: 0,
             loaded: false,
             searched: false,
+            seasonRating: undefined,
         }
 
         this.handleNewSearchTyped = this.handleNewSearchTyped.bind(this);
@@ -167,6 +168,8 @@ export default class Team extends React.Component {
             console.log(res);
             this.setState({posMax: res.data.formation.length});
             this.setState({seasonPosMax: res.data.season.draw.length});
+            this.setState({seasonRating: parseInt(res.data.rating)});
+            console.log(res.data.rating);
         });
         this.setState({loaded: false});
         // get match histories, split out posMax part and create new state
@@ -194,6 +197,7 @@ export default class Team extends React.Component {
                     this.setState({selData: res.data});
                     this.setState({pos: 0});
                     this.setState({posMax: res.data.length});
+                    //this.setState({seasonRating: res.data.rating});
                 }
             });
             this.setState({seasonPos: this.state.seasonPos + shift});
@@ -546,7 +550,7 @@ export default class Team extends React.Component {
                     </div> 
                
                <div className="teamRating" style = {{'background': col}}>
-                    {this.state.selSeasonData.OVERALL_RATING[this.state.seasonPos]}
+                    {this.state.results[this.state.selPos].OVERALL_RATING}
                </div>
                </div>
                 <div className="teamData">

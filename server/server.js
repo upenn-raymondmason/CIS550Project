@@ -993,8 +993,35 @@ webapp.post('/get_formation/', (req, res) => {
         `
       , [req.body.season]);
 
+      const rating = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE MATCH.HOME_TEAM_API_ID = ${req.body.team_api_id} AND MATCH.season = :season),
+          pivot_home_ids as (select MATCH_API_ID, PLAYER_ID
+          from home_temp
+          Unpivot (player_id for pid in (HOME_PLAYER_1, HOME_PLAYER_2, HOME_PLAYER_3, HOME_PLAYER_4, HOME_PLAYER_5, HOME_PLAYER_6, HOME_PLAYER_7, HOME_PLAYER_8, HOME_PLAYER_9, HOME_PLAYER_10, HOME_PLAYER_11))),
+          home_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+          from pivot_home_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_home_ids.player_id
+          group by match_api_id),
+          away_temp AS (
+          SELECT * FROM MATCH WHERE MATCH.AWAY_TEAM_API_ID = ${req.body.team_api_id} AND MATCH.season = :season),
+          pivot_away_ids as (select MATCH_API_ID, PLAYER_ID
+          from away_temp
+          Unpivot (player_id for pid in (AWAY_PLAYER_1, AWAY_PLAYER_2, AWAY_PLAYER_3, AWAY_PLAYER_4, AWAY_PLAYER_5, AWAY_PLAYER_6, AWAY_PLAYER_7, AWAY_PLAYER_8, AWAY_PLAYER_9, AWAY_PLAYER_10, AWAY_PLAYER_11))),
+          away_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+          from pivot_away_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_away_ids.player_id
+          group by match_api_id),
+          all_matches as (
+          SELECT *
+          FROM home_avgs
+          UNION ALL
+          SELECT *
+          FROM away_avgs)
+          SELECT avg(avg_player_rating) as avg_season_rating
+          FROM all_matches`
+      , [req.body.season, req.body.season]);
+
       console.log(result.rows);
-      res.json({message: 'success', data: result.rows});
+      res.json({message: 'success', data: result.rows, rating: rating.rows[0].AVG_SEASON_RATING});
     } catch (err) {
       console.error(err);
       res.status(400).json({err: err});
@@ -1240,12 +1267,32 @@ webapp.post('/get_team_data/', (req, res) => {
           SELECT aways.*, COUNTRY.NAME AS COUNTRY_NAME FROM aways JOIN COUNTRY ON aways.COUNTRY_ID = COUNTRY.COUNTRY_ID ORDER BY STAGE
         `
       );
-      /*
-      const season_rating = await connection.execute(
-        `
-        `
-      ); Query to get overall rating of team for each season using only matches from that season.
-      */
+      /*const rating = await connection.execute(
+        `WITH home_temp AS (
+          SELECT * FROM MATCH WHERE MATCH.HOME_TEAM_API_ID = ${req.body.team_api_id} AND MATCH.season = '2015/2016'),
+          pivot_home_ids as (select MATCH_API_ID, PLAYER_ID
+          from home_temp
+          Unpivot (player_id for pid in (HOME_PLAYER_1, HOME_PLAYER_2, HOME_PLAYER_3, HOME_PLAYER_4, HOME_PLAYER_5, HOME_PLAYER_6, HOME_PLAYER_7, HOME_PLAYER_8, HOME_PLAYER_9, HOME_PLAYER_10, HOME_PLAYER_11))),
+          home_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+          from pivot_home_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_home_ids.player_id
+          group by match_api_id),
+          away_temp AS (
+          SELECT * FROM MATCH WHERE MATCH.AWAY_TEAM_API_ID = ${req.body.team_api_id} AND MATCH.season = '2015/2016'),
+          pivot_away_ids as (select MATCH_API_ID, PLAYER_ID
+          from away_temp
+          Unpivot (player_id for pid in (AWAY_PLAYER_1, AWAY_PLAYER_2, AWAY_PLAYER_3, AWAY_PLAYER_4, AWAY_PLAYER_5, AWAY_PLAYER_6, AWAY_PLAYER_7, AWAY_PLAYER_8, AWAY_PLAYER_9, AWAY_PLAYER_10, AWAY_PLAYER_11))),
+          away_avgs as (select MATCH_API_ID, AVG(OVERALL_RATING) as avg_player_rating
+          from pivot_away_ids JOIN PLAYERATTRIBUTES PA ON PA.PLAYER_API_ID = pivot_away_ids.player_id
+          group by match_api_id),
+          all_matches as (
+          SELECT *
+          FROM home_avgs
+          UNION ALL
+          SELECT *
+          FROM away_avgs)
+          SELECT avg(avg_player_rating) as avg_season_rating
+          FROM all_matches`
+      ); */
       
 
       var total = wins.rows[0].WIN + draws.rows[0].DRAW + losses.rows[0].LOSS;
@@ -1253,7 +1300,8 @@ webapp.post('/get_team_data/', (req, res) => {
       var out = {win: parseInt(wins.rows[0].WIN / total * 100), draw: parseInt(draws.rows[0].DRAW / total * 100), loss: parseInt(losses.rows[0].LOSS / total * 100), goals_scored: Math.round(goals_scored.rows[0].AVERAGE_GOALS * 100) / 100, goals_conceded: Math.round(goals_conceded.rows[0].AVERAGE_GOALS * 100) / 100};
       var outSeason = {win: wins_season.rows, draw: draws_season.rows, loss: losses_season.rows, goals_scored: goals_scored_season.rows, goals_conceded: goals_conceded_season.rows, OVERALL_RATING: [ 90, 90, 90, 90, 90, 90, 90, 90]};
 
-      console.log(out);
+      //console.log(rating.rows[0].AVG_SEASON_RATING);
+      //res.json({message: 'success', data: {stats: out, season: outSeason, formation: formation.rows, rating: rating.rows[0].AVG_SEASON_RATING}});
       res.json({message: 'success', data: {stats: out, season: outSeason, formation: formation.rows}});
       //res.json({message: 'success'});
     } catch (err) {

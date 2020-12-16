@@ -9,7 +9,7 @@ import Select from 'react-select';
 import {getPlayers, getPlayerData, addPlayer, remPlayer, getFavPlayers} from '../fetcher';
 import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
-const options = require('../resources/options');
+const attrOptions = require('../resources/options');
 //Fav Button from https://codepen.io/mapk/pen/ZOQqaQ
 
 export default class Player extends React.Component {
@@ -211,6 +211,8 @@ export default class Player extends React.Component {
         var end = parseInt(this.state.end);
         var start = parseInt(this.state.start);
 
+        console.log(this.state.attribute, min, max, start, end);
+
         console.log('clicked');
         if (end > 2020) {
             alert('Enter an end date for birth before 2020');
@@ -238,7 +240,7 @@ export default class Player extends React.Component {
                 });
             }
         } else {
-            if (this.state.min !== undefined || this.state.max !== undefined) {
+            if ((this.state.min !== undefined || this.state.max !== undefined)) {
                 alert('Enter an attribute to go with your min/max value');
             } else {
                 getPlayers(this.state.searchName, this.state.start, this.state.end, this.state.attribute, this.state.min, this.state.max)
@@ -529,7 +531,7 @@ export default class Player extends React.Component {
                         onChange={this.hanldeNewAttrSelected}
                         className="selector"
                         name="color"
-                        options={options}
+                        options={attrOptions}
                         menuIsOpen={menuIsOpen} 
                         />
                         </div>
