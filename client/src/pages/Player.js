@@ -1,3 +1,5 @@
+
+
 import '../styles/Player.css';
 import '../styles/Input.scss'
 import '../styles/Dropdown.css'
@@ -11,6 +13,7 @@ import RadarChart from 'react-svg-radar-chart';
 import 'react-svg-radar-chart/build/css/index.css'
 const attrOptions = require('../resources/options');
 //Fav Button from https://codepen.io/mapk/pen/ZOQqaQ
+//Input Text from https://codepen.io/lucasyem/pen/ZEEYKdj
 
 export default class Player extends React.Component {
 

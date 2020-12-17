@@ -1267,6 +1267,9 @@ webapp.post('/get_team_data/', (req, res) => {
           SELECT aways.*, COUNTRY.NAME AS COUNTRY_NAME FROM aways JOIN COUNTRY ON aways.COUNTRY_ID = COUNTRY.COUNTRY_ID ORDER BY STAGE
         `
       );
+
+      //Considered obtaining rating each season, however ultimately decided that overall rating across all seasons more appropriate
+      
       /*const rating = await connection.execute(
         `WITH home_temp AS (
           SELECT * FROM MATCH WHERE MATCH.HOME_TEAM_API_ID = ${req.body.team_api_id} AND MATCH.season = '2015/2016'),
